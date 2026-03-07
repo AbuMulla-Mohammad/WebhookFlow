@@ -1,0 +1,36 @@
+{
+  "name": "webhookflow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "worker": "tsx src/workers/jobWorker.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "format:write": "prettier --write \"src/**/*.{js,ts,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,ts,json,css,md}\"",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.3.3",
+    "drizzle-kit": "^0.31.9",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.4.0",
+    "prettier": "3.8.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.1",
+    "postgres": "^3.4.8"
+  }
+}
