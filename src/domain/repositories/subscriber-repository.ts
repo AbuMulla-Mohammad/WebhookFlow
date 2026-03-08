@@ -6,4 +6,5 @@ export interface SubscriberRepository {
   save(subscriber: Subscriber): Promise<void>;
   delete(id: string): Promise<void>;
   update(subscriber: Subscriber): Promise<void>;
+  saveMany(subscribers: Subscriber[]): Promise<void>;
 }
