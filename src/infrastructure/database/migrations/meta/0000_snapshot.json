@@ -67,9 +67,7 @@
         "pipelines_webhook_path_unique": {
           "name": "pipelines_webhook_path_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "webhook_path"
-          ]
+          "columns": ["webhook_path"]
         }
       },
       "policies": {},
@@ -126,12 +124,8 @@
           "name": "subscribers_pipeline_id_pipelines_id_fk",
           "tableFrom": "subscribers",
           "tableTo": "pipelines",
-          "columnsFrom": [
-            "pipeline_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pipeline_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
