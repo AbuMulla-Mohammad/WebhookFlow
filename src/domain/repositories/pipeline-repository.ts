@@ -5,4 +5,5 @@ export interface PipelineRepository {
   getByWebhookPath(path: string): Promise<Pipeline | null>;
   getAll(): Promise<Pipeline[]>;
   save(pipeline: Pipeline): Promise<Pipeline>;
+  update(pipeline: Pipeline): Promise<Pipeline>;
 }

@@ -57,4 +57,21 @@ export class PipelineRepositoryImpl implements PipelineRepository {
 
     return this.toDomain(result);
   }
+
+  async update(pipeline: Pipeline): Promise<Pipeline> {
+    const [result] = await db
+      .update(pipelines)
+      .set({
+        name: pipeline.name,
+        description: pipeline.description,
+        webhookPath: pipeline.webhookPath,
+        actionType: pipeline.actionType,
+        updatedAt: pipeline.updatedAt,
+        isDeleted: pipeline.isDeleted,
+      })
+      .where(eq(pipelines.id, pipeline.id))
+      .returning();
+
+    return this.toDomain(result);
+  }
 }
