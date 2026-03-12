@@ -21,3 +21,5 @@ export const subscribers = pgTable("subscribers", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   isDeleted: boolean("is_deleted").notNull().default(false),
 });
+
+export type PipelineRow = typeof pipelines.$inferSelect;
