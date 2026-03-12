@@ -1,5 +1,5 @@
-import { ActionType } from "../types/action-type";
-import { BaseEntity } from "./base-entity";
+import { ActionType } from "../types/action-type.js";
+import { BaseEntity } from "./base-entity.js";
 
 export interface Pipeline extends BaseEntity {
   name: string;

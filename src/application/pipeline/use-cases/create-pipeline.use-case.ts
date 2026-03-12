@@ -1,11 +1,11 @@
-import { PipelineRepository } from "src/domain/repositories/pipeline-repository";
-import { PipelineInputDto } from "./dtos/pipeline-input.dto";
-import { PipelineOutputDto } from "./dtos/pipeline-output.dto";
-import { Pipeline } from "src/domain/entities/pipeline";
+import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
+import { PipelineInputDto } from "./dtos/pipeline-input.dto.js";
+import { PipelineOutputDto } from "./dtos/pipeline-output.dto.js";
+import { Pipeline } from "../../../domain/entities/pipeline.js";
 import { randomUUID } from "node:crypto";
-import { ACTION_TYPES } from "src/domain/types/action-type";
-import { BadRequestError } from "src/shared/errors/BadRequestError";
-import { SubscriberRepository } from "src/domain/repositories/subscriber-repository";
+import { ACTION_TYPES } from "../../../domain/types/action-type.js";
+import { BadRequestError } from "../../../shared/errors/BadRequestError.js";
+import { SubscriberRepository } from "../../../domain/repositories/subscriber-repository.js";
 
 export class CreatePipelineUseCase {
   constructor(

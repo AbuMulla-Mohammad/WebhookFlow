@@ -1,4 +1,4 @@
-import { BaseEntity } from "./base-entity";
+import { BaseEntity } from "./base-entity.js";
 
 export interface Subscriber extends BaseEntity {
   pipelineId: string;

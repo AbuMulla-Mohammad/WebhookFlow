@@ -1,5 +1,5 @@
-import { Job } from "../entities/job";
-import { JobStatus } from "../types/job-status";
+import { Job } from "../entities/job.js";
+import { JobStatus } from "../types/job-status.js";
 
 export interface JobRepository {
   getById(id: string): Promise<Job | null>;

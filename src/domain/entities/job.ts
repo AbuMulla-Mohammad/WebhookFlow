@@ -1,5 +1,5 @@
-import { JobStatus } from "../types/job-status";
-import { BaseEntity } from "./base-entity";
+import { JobStatus } from "../types/job-status.js";
+import { BaseEntity } from "./base-entity.js";
 
 export interface Job extends BaseEntity {
   processedAt?: Date;

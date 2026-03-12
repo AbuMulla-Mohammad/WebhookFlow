@@ -1,4 +1,4 @@
-import { Pipeline } from "../entities/pipeline";
+import { Pipeline } from "../entities/pipeline.js";
 
 export interface PipelineRepository {
   getById(id: string): Promise<Pipeline | null>;

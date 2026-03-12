@@ -1,4 +1,4 @@
-import { Subscriber } from "../entities/subscriber";
+import { Subscriber } from "../entities/subscriber.js";
 
 export interface SubscriberRepository {
   getById(id: string): Promise<Subscriber | null>;

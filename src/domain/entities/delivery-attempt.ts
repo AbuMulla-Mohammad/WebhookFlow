@@ -1,5 +1,5 @@
-import { DeliveryStatus } from "../types/delivery-status";
-import { BaseEntity } from "./base-entity";
+import { DeliveryStatus } from "../types/delivery-status.js";
+import { BaseEntity } from "./base-entity.js";
 
 export interface DeliveryAttempt extends BaseEntity {
   jobId: string;

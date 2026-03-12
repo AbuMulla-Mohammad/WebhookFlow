@@ -1,4 +1,4 @@
-import { DeliveryAttempt } from "../entities/delivery-attempt";
+import { DeliveryAttempt } from "../entities/delivery-attempt.js";
 
 export interface DeliveryAttemptRepository {
   save(attempt: DeliveryAttempt): Promise<void>;
