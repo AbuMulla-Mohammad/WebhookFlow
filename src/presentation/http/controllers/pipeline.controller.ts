@@ -4,8 +4,8 @@ import { UpdatePipelineUseCase } from "../../../application/pipeline/use-cases/u
 import { ok } from "../contracts/api-result.js";
 import { GetPipelineByIdUseCase } from "../../../application/pipeline/use-cases/get-pipeline-by-id.use-case.js";
 import { GetPipelineByWebhookPathUseCase } from "../../../application/pipeline/use-cases/get-pipeline-by-webhook-path.use-case.js";
-import { AddSubscriberUseCase } from "src/application/pipeline/use-cases/add-subscriber.use-case.js";
-import { RemoveSubscriberUseCase } from "src/application/pipeline/use-cases/remove-subscriber.use-case.js";
+import { AddSubscriberUseCase } from "../../../application/pipeline/use-cases/add-subscriber.use-case.js";
+import { RemoveSubscriberUseCase } from "../../../application/pipeline/use-cases/remove-subscriber.use-case.js";
 
 export class PipelineController {
   constructor(

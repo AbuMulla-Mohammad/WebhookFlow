@@ -5,8 +5,8 @@ import { PipelineRepositoryImpl } from "../../infrastructure/repositories/pipeli
 import { SubscriberRepositoryImpl } from "../../infrastructure/repositories/subscriber.repository.js";
 import { PipelineController } from "../http/controllers/pipeline.controller.js";
 import { GetPipelineByWebhookPathUseCase } from "../../application/pipeline/use-cases/get-pipeline-by-webhook-path.use-case.js";
-import { AddSubscriberUseCase } from "src/application/pipeline/use-cases/add-subscriber.use-case.js";
-import { RemoveSubscriberUseCase } from "src/application/pipeline/use-cases/remove-subscriber.use-case.js";
+import { AddSubscriberUseCase } from "../../application/pipeline/use-cases/add-subscriber.use-case.js";
+import { RemoveSubscriberUseCase } from "../../application/pipeline/use-cases/remove-subscriber.use-case.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
