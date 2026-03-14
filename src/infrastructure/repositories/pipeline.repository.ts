@@ -1,9 +1,18 @@
 import { Pipeline } from "../../domain/entities/pipeline.js";
-import { PipelineRepository } from "../../domain/repositories/pipeline-repository.js";
+import {
+  PipelineRepository,
+  PipelineWithSubscribers,
+} from "../../domain/repositories/pipeline-repository.js";
 import { db } from "../database/connection.js";
-import { eq } from "drizzle-orm";
-import { PipelineRow, pipelines } from "../database/schema.js";
+import { and, eq } from "drizzle-orm";
+import {
+  PipelineRow,
+  pipelines,
+  SubscriberRow,
+  subscribers,
+} from "../database/schema.js";
 import { ActionType } from "../../domain/types/action-type.js";
+import { Subscriber } from "../../domain/entities/subscriber.js";
 
 export class PipelineRepositoryImpl implements PipelineRepository {
   private toDomain(row: PipelineRow): Pipeline {
@@ -13,23 +22,93 @@ export class PipelineRepositoryImpl implements PipelineRepository {
     };
   }
 
+  private toSubscriber(row: SubscriberRow): Subscriber {
+    return { ...row };
+  }
+
+  private mapPipelineWithSubscribers(
+    rows: Array<{ pipeline: PipelineRow; subscriber: SubscriberRow | null }>,
+  ): PipelineWithSubscribers {
+    const pipeline = this.toDomain(rows[0].pipeline);
+
+    const pipelineSubscribers = rows
+      .map((r) => r.subscriber)
+      .filter((s): s is SubscriberRow => s !== null)
+      .map((s) => this.toSubscriber(s));
+
+    return {
+      ...pipeline,
+      subscribers: pipelineSubscribers,
+    };
+  }
+
   async getById(id: string): Promise<Pipeline | null> {
     const result = await db.query.pipelines.findFirst({
-      where: eq(pipelines.id, id),
+      where: and(eq(pipelines.id, id), eq(pipelines.isDeleted, false)),
     });
 
     if (!result) return null;
 
     return this.toDomain(result);
   }
+
+  async getByIdWithSubscribers(
+    id: string,
+  ): Promise<PipelineWithSubscribers | null> {
+    const rows = await db
+      .select({
+        pipeline: pipelines,
+        subscriber: subscribers,
+      })
+      .from(pipelines)
+      .leftJoin(
+        subscribers,
+        and(
+          eq(subscribers.pipelineId, pipelines.id),
+          eq(subscribers.isDeleted, false),
+        ),
+      )
+      .where(and(eq(pipelines.id, id), eq(pipelines.isDeleted, false)));
+
+    if (rows.length === 0) return null;
+    return this.mapPipelineWithSubscribers(rows);
+  }
+
   async getByWebhookPath(path: string): Promise<Pipeline | null> {
     const result = await db.query.pipelines.findFirst({
-      where: eq(pipelines.webhookPath, path),
+      where: and(
+        eq(pipelines.webhookPath, path),
+        eq(pipelines.isDeleted, false),
+      ),
     });
 
     if (!result) return null;
 
     return this.toDomain(result);
+  }
+
+  async getByWebhookPathWithSubscribers(
+    path: string,
+  ): Promise<PipelineWithSubscribers | null> {
+    const rows = await db
+      .select({
+        pipeline: pipelines,
+        subscriber: subscribers,
+      })
+      .from(pipelines)
+      .leftJoin(
+        subscribers,
+        and(
+          eq(subscribers.pipelineId, pipelines.id),
+          eq(subscribers.isDeleted, false),
+        ),
+      )
+      .where(
+        and(eq(pipelines.webhookPath, path), eq(pipelines.isDeleted, false)),
+      );
+
+    if (rows.length === 0) return null;
+    return this.mapPipelineWithSubscribers(rows);
   }
 
   async getAll(): Promise<Pipeline[]> {

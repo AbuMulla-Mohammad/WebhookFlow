@@ -2,11 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { CreatePipelineUseCase } from "../../../application/pipeline/use-cases/create-pipeline.use-case.js";
 import { UpdatePipelineUseCase } from "../../../application/pipeline/use-cases/update-pipeline.use-case.js";
 import { ok } from "../contracts/api-result.js";
+import { GetPipelineByIdUseCase } from "../../../application/pipeline/use-cases/get-pipeline-by-id.use-case.js";
 
 export class PipelineController {
   constructor(
     private readonly createPipelineUseCase: CreatePipelineUseCase,
     private readonly updatePipelineUseCase: UpdatePipelineUseCase,
+    private readonly getPipelineByIdUseCase: GetPipelineByIdUseCase,
   ) {}
 
   createPipeline = async (req: Request, res: Response, next: NextFunction) => {
@@ -29,6 +31,21 @@ export class PipelineController {
         req.params.pipelineId,
       );
       return res.status(200).json(ok(result, "Pipeline updated"));
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  getPipelineById = async (
+    req: Request<{ pipelineId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const result = await this.getPipelineByIdUseCase.execute(
+        req.params.pipelineId,
+      );
+      return res.status(200).json(ok(result, "Pipeline retrieved"));
     } catch (error) {
       return next(error);
     }

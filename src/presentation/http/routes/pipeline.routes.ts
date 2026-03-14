@@ -22,5 +22,10 @@ export function buildPipelineRoutes(container: AppContainer): Router {
     container.controllers.Pipeline.updatePipeline,
   );
 
+  router.get(
+    "/:pipelineId",
+    validateParams(pipelineIdParamsSchema),
+    container.controllers.Pipeline.getPipelineById,
+  );
   return router;
 }

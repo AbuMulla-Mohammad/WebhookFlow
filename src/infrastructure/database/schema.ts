@@ -23,3 +23,4 @@ export const subscribers = pgTable("subscribers", {
 });
 
 export type PipelineRow = typeof pipelines.$inferSelect;
+export type SubscriberRow = typeof subscribers.$inferSelect;

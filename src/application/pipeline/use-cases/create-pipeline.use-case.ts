@@ -1,6 +1,6 @@
 import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
-import { PipelineInputDto } from "./dtos/pipeline-input.dto.js";
-import { PipelineOutputDto } from "./dtos/pipeline-output.dto.js";
+import { PipelineInputDto } from "../dtos/pipeline-input.dto.js";
+import { PipelineOutputDto } from "../dtos/pipeline-output.dto.js";
 import { Pipeline } from "../../../domain/entities/pipeline.js";
 import { randomUUID } from "node:crypto";
 import { ACTION_TYPES } from "../../../domain/types/action-type.js";
