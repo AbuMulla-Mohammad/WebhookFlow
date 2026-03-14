@@ -6,8 +6,10 @@ import { updatePipelineSchema } from "../validators/update-pipeline.validator.js
 import { validateParams } from "../middlewares/validateParamsMiddleware.js";
 import {
   pipelineIdParamsSchema,
+  pipelineSubscriberParamsSchema,
   webhookPathParamsSchema,
 } from "../validators/pipeline-params.validator.js";
+import { addSubscriberSchema } from "../validators/add-subscriber.validator.js";
 
 export function buildPipelineRoutes(container: AppContainer): Router {
   const router = Router();
@@ -35,6 +37,19 @@ export function buildPipelineRoutes(container: AppContainer): Router {
     "/webhook/:webhookPath",
     validateParams(webhookPathParamsSchema),
     container.controllers.Pipeline.getPipelineByWebhookPath,
+  );
+
+  router.post(
+    "/:pipelineId/subscribers",
+    validateParams(pipelineIdParamsSchema),
+    validateBody(addSubscriberSchema),
+    container.controllers.Pipeline.addSubscriber,
+  );
+
+  router.delete(
+    "/:pipelineId/subscribers/:subscriberId",
+    validateParams(pipelineSubscriberParamsSchema),
+    container.controllers.Pipeline.removeSubscriber,
   );
   return router;
 }

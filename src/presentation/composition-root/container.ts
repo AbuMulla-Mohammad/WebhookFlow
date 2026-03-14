@@ -5,6 +5,8 @@ import { PipelineRepositoryImpl } from "../../infrastructure/repositories/pipeli
 import { SubscriberRepositoryImpl } from "../../infrastructure/repositories/subscriber.repository.js";
 import { PipelineController } from "../http/controllers/pipeline.controller.js";
 import { GetPipelineByWebhookPathUseCase } from "../../application/pipeline/use-cases/get-pipeline-by-webhook-path.use-case.js";
+import { AddSubscriberUseCase } from "src/application/pipeline/use-cases/add-subscriber.use-case.js";
+import { RemoveSubscriberUseCase } from "src/application/pipeline/use-cases/remove-subscriber.use-case.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
@@ -24,6 +26,14 @@ export function createContainer() {
     getPipelineByWebhookPath: new GetPipelineByWebhookPathUseCase(
       repositories.pipeline,
     ),
+    addSubscriber: new AddSubscriberUseCase(
+      repositories.pipeline,
+      repositories.subscriber,
+    ),
+    removeSubscriber: new RemoveSubscriberUseCase(
+      repositories.pipeline,
+      repositories.subscriber,
+    ),
   };
 
   const controllers = {
@@ -32,6 +42,8 @@ export function createContainer() {
       useCases.updatePipeline,
       useCases.getPipelineById,
       useCases.getPipelineByWebhookPath,
+      useCases.addSubscriber,
+      useCases.removeSubscriber,
     ),
   };
 
