@@ -4,7 +4,10 @@ import { validateBody } from "../middlewares/validateMiddleware.js";
 import { createPipelineSchema } from "../validators/create-pipeline.validator.js";
 import { updatePipelineSchema } from "../validators/update-pipeline.validator.js";
 import { validateParams } from "../middlewares/validateParamsMiddleware.js";
-import { pipelineIdParamsSchema } from "../validators/pipeline-params.validator.js";
+import {
+  pipelineIdParamsSchema,
+  webhookPathParamsSchema,
+} from "../validators/pipeline-params.validator.js";
 
 export function buildPipelineRoutes(container: AppContainer): Router {
   const router = Router();
@@ -26,6 +29,12 @@ export function buildPipelineRoutes(container: AppContainer): Router {
     "/:pipelineId",
     validateParams(pipelineIdParamsSchema),
     container.controllers.Pipeline.getPipelineById,
+  );
+
+  router.get(
+    "/webhook/:webhookPath",
+    validateParams(webhookPathParamsSchema),
+    container.controllers.Pipeline.getPipelineByWebhookPath,
   );
   return router;
 }

@@ -1,4 +1,3 @@
-// src/application/pipeline/use-cases/update-pipeline.use-case.ts
 import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
 import { PipelineOutputDto } from "../dtos/pipeline-output.dto.js";
 import { UpdatePipelineInputDto } from "../dtos/update-pipeline-input.dto.js";

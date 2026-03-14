@@ -4,6 +4,7 @@ import { UpdatePipelineUseCase } from "../../application/pipeline/use-cases/upda
 import { PipelineRepositoryImpl } from "../../infrastructure/repositories/pipeline.repository.js";
 import { SubscriberRepositoryImpl } from "../../infrastructure/repositories/subscriber.repository.js";
 import { PipelineController } from "../http/controllers/pipeline.controller.js";
+import { GetPipelineByWebhookPathUseCase } from "../../application/pipeline/use-cases/get-pipeline-by-webhook-path.use-case.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
@@ -20,6 +21,9 @@ export function createContainer() {
     ),
     updatePipeline: new UpdatePipelineUseCase(repositories.pipeline),
     getPipelineById: new GetPipelineByIdUseCase(repositories.pipeline),
+    getPipelineByWebhookPath: new GetPipelineByWebhookPathUseCase(
+      repositories.pipeline,
+    ),
   };
 
   const controllers = {
@@ -27,6 +31,7 @@ export function createContainer() {
       useCases.createPipeline,
       useCases.updatePipeline,
       useCases.getPipelineById,
+      useCases.getPipelineByWebhookPath,
     ),
   };
 
