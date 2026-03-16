@@ -7,13 +7,18 @@ import { PipelineController } from "../http/controllers/pipeline.controller.js";
 import { GetPipelineByWebhookPathUseCase } from "../../application/pipeline/use-cases/get-pipeline-by-webhook-path.use-case.js";
 import { AddSubscriberUseCase } from "../../application/pipeline/use-cases/add-subscriber.use-case.js";
 import { RemoveSubscriberUseCase } from "../../application/pipeline/use-cases/remove-subscriber.use-case.js";
+import { db } from "../../infrastructure/database/connection.js";
+import { JobRepositoryImpl } from "../../infrastructure/repositories/job.repository.js";
+import { TriggerWebhookUseCase } from "../../application/pipeline/use-cases/trigger-webhook.use-case.js";
+import { WebhookController } from "../http/controllers/webhook.controller.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
 export function createContainer() {
   const repositories = {
-    pipeline: new PipelineRepositoryImpl(),
-    subscriber: new SubscriberRepositoryImpl(),
+    pipeline: new PipelineRepositoryImpl(db),
+    subscriber: new SubscriberRepositoryImpl(db),
+    job: new JobRepositoryImpl(db),
   };
 
   const useCases = {
@@ -34,6 +39,10 @@ export function createContainer() {
       repositories.pipeline,
       repositories.subscriber,
     ),
+    triggerWebhook: new TriggerWebhookUseCase(
+      repositories.pipeline,
+      repositories.job,
+    ),
   };
 
   const controllers = {
@@ -45,6 +54,7 @@ export function createContainer() {
       useCases.addSubscriber,
       useCases.removeSubscriber,
     ),
+    Webhook: new WebhookController(useCases.triggerWebhook),
   };
 
   return {
