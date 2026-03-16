@@ -7,12 +7,13 @@ import { subscribers } from "../database/schema.js";
 type SubscriberRow = typeof subscribers.$inferSelect;
 
 export class SubscriberRepositoryImpl implements SubscriberRepository {
+  constructor(private readonly database: typeof db) {}
   private toDomain(row: SubscriberRow): Subscriber {
     return { ...row };
   }
 
   async getById(id: string): Promise<Subscriber | null> {
-    const result = await db.query.subscribers.findFirst({
+    const result = await this.database.query.subscribers.findFirst({
       where: and(eq(subscribers.id, id), eq(subscribers.isDeleted, false)),
     });
 
@@ -21,7 +22,7 @@ export class SubscriberRepositoryImpl implements SubscriberRepository {
   }
 
   async getByPipelineId(pipelineId: string): Promise<Subscriber[]> {
-    const result = await db.query.subscribers.findMany({
+    const result = await this.database.query.subscribers.findMany({
       where: and(
         eq(subscribers.pipelineId, pipelineId),
         eq(subscribers.isDeleted, false),
@@ -32,7 +33,7 @@ export class SubscriberRepositoryImpl implements SubscriberRepository {
   }
 
   async save(subscriber: Subscriber): Promise<void> {
-    await db.insert(subscribers).values({
+    await this.database.insert(subscribers).values({
       id: subscriber.id,
       pipelineId: subscriber.pipelineId,
       targetUrl: subscriber.targetUrl,
@@ -43,7 +44,7 @@ export class SubscriberRepositoryImpl implements SubscriberRepository {
   }
 
   async update(subscriber: Subscriber): Promise<void> {
-    await db
+    await this.database
       .update(subscribers)
       .set({
         pipelineId: subscriber.pipelineId,
@@ -55,7 +56,7 @@ export class SubscriberRepositoryImpl implements SubscriberRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await db
+    await this.database
       .update(subscribers)
       .set({ isDeleted: true, updatedAt: new Date() })
       .where(eq(subscribers.id, id));
@@ -63,7 +64,7 @@ export class SubscriberRepositoryImpl implements SubscriberRepository {
 
   async saveMany(subscribersList: Subscriber[]): Promise<void> {
     if (subscribersList.length === 0) return;
-    await db.insert(subscribers).values(
+    await this.database.insert(subscribers).values(
       subscribersList.map((s) => ({
         id: s.id,
         pipelineId: s.pipelineId,

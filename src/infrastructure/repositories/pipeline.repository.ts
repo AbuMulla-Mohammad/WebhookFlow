@@ -15,6 +15,7 @@ import { ActionType } from "../../domain/types/action-type.js";
 import { Subscriber } from "../../domain/entities/subscriber.js";
 
 export class PipelineRepositoryImpl implements PipelineRepository {
+  constructor(private readonly database: typeof db) {}
   private toDomain(row: PipelineRow): Pipeline {
     return {
       ...row,
@@ -43,7 +44,7 @@ export class PipelineRepositoryImpl implements PipelineRepository {
   }
 
   async getById(id: string): Promise<Pipeline | null> {
-    const result = await db.query.pipelines.findFirst({
+    const result = await this.database.query.pipelines.findFirst({
       where: and(eq(pipelines.id, id), eq(pipelines.isDeleted, false)),
     });
 
@@ -55,7 +56,7 @@ export class PipelineRepositoryImpl implements PipelineRepository {
   async getByIdWithSubscribers(
     id: string,
   ): Promise<PipelineWithSubscribers | null> {
-    const rows = await db
+    const rows = await this.database
       .select({
         pipeline: pipelines,
         subscriber: subscribers,
@@ -75,7 +76,7 @@ export class PipelineRepositoryImpl implements PipelineRepository {
   }
 
   async getByWebhookPath(path: string): Promise<Pipeline | null> {
-    const result = await db.query.pipelines.findFirst({
+    const result = await this.database.query.pipelines.findFirst({
       where: and(
         eq(pipelines.webhookPath, path),
         eq(pipelines.isDeleted, false),
@@ -90,7 +91,7 @@ export class PipelineRepositoryImpl implements PipelineRepository {
   async getByWebhookPathWithSubscribers(
     path: string,
   ): Promise<PipelineWithSubscribers | null> {
-    const rows = await db
+    const rows = await this.database
       .select({
         pipeline: pipelines,
         subscriber: subscribers,
@@ -112,7 +113,7 @@ export class PipelineRepositoryImpl implements PipelineRepository {
   }
 
   async getAll(): Promise<Pipeline[]> {
-    const result = await db.query.pipelines.findMany({
+    const result = await this.database.query.pipelines.findMany({
       where: eq(pipelines.isDeleted, false),
     });
 
@@ -120,7 +121,7 @@ export class PipelineRepositoryImpl implements PipelineRepository {
   }
 
   async save(pipeline: Pipeline): Promise<Pipeline> {
-    const [result] = await db
+    const [result] = await this.database
       .insert(pipelines)
       .values({
         id: pipeline.id,
@@ -138,7 +139,7 @@ export class PipelineRepositoryImpl implements PipelineRepository {
   }
 
   async update(pipeline: Pipeline): Promise<Pipeline> {
-    const [result] = await db
+    const [result] = await this.database
       .update(pipelines)
       .set({
         name: pipeline.name,
