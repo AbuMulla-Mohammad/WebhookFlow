@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { Job } from "../../domain/entities/job.js";
 import { JobRepository } from "../../domain/repositories/job-repository.js";
 import { JobStatus } from "../../domain/types/job-status.js";
@@ -61,6 +61,43 @@ export class JobRepositoryImpl implements JobRepository {
         updatedAt: new Date(),
         processedAt:
           status === "completed" || status === "failed" ? new Date() : null,
+      })
+      .where(and(eq(jobs.id, id), eq(jobs.isDeleted, false)));
+  }
+  async markProcessing(id: string): Promise<void> {
+    await this.database
+      .update(jobs)
+      .set({
+        status: "processing",
+        updatedAt: new Date(),
+        processedAt: null,
+        attempts: sql<number>`attempts + 1`,
+      })
+      .where(and(eq(jobs.id, id), eq(jobs.isDeleted, false)));
+  }
+  async markCompleted(
+    id: string,
+    result: Record<string, unknown>,
+  ): Promise<void> {
+    await this.database
+      .update(jobs)
+      .set({
+        status: "completed",
+        result,
+        errorMessage: null,
+        updatedAt: new Date(),
+        processedAt: new Date(),
+      })
+      .where(and(eq(jobs.id, id), eq(jobs.isDeleted, false)));
+  }
+  async markFailed(id: string, errorMessage: string): Promise<void> {
+    await this.database
+      .update(jobs)
+      .set({
+        status: "failed",
+        errorMessage,
+        updatedAt: new Date(),
+        processedAt: new Date(),
       })
       .where(and(eq(jobs.id, id), eq(jobs.isDeleted, false)));
   }

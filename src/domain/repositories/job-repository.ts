@@ -6,4 +6,7 @@ export interface JobRepository {
   save(job: Job): Promise<void>;
   getByStatus(jobStatus: JobStatus): Promise<Job[]>;
   updateStatus(id: string, status: JobStatus): Promise<void>;
+  markProcessing(id: string): Promise<void>;
+  markCompleted(id: string, result: Record<string, unknown>): Promise<void>;
+  markFailed(id: string, errorMessage: string): Promise<void>;
 }

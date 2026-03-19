@@ -11,6 +11,7 @@ import { db } from "../../infrastructure/database/connection.js";
 import { JobRepositoryImpl } from "../../infrastructure/repositories/job.repository.js";
 import { TriggerWebhookUseCase } from "../../application/pipeline/use-cases/trigger-webhook.use-case.js";
 import { WebhookController } from "../http/controllers/webhook.controller.js";
+import { RabbitMQJobQueuePublisher } from "../../infrastructure/messaging/rabbitmq-job-queue.publisher.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
@@ -19,6 +20,10 @@ export function createContainer() {
     pipeline: new PipelineRepositoryImpl(db),
     subscriber: new SubscriberRepositoryImpl(db),
     job: new JobRepositoryImpl(db),
+  };
+
+  const messaging = {
+    jobQueuePublisher: new RabbitMQJobQueuePublisher(),
   };
 
   const useCases = {
@@ -42,6 +47,7 @@ export function createContainer() {
     triggerWebhook: new TriggerWebhookUseCase(
       repositories.pipeline,
       repositories.job,
+      messaging.jobQueuePublisher,
     ),
   };
 
