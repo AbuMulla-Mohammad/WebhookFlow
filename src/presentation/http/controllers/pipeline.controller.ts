@@ -6,6 +6,14 @@ import { GetPipelineByIdUseCase } from "../../../application/pipeline/use-cases/
 import { GetPipelineByWebhookPathUseCase } from "../../../application/pipeline/use-cases/get-pipeline-by-webhook-path.use-case.js";
 import { AddSubscriberUseCase } from "../../../application/pipeline/use-cases/add-subscriber.use-case.js";
 import { RemoveSubscriberUseCase } from "../../../application/pipeline/use-cases/remove-subscriber.use-case.js";
+import {
+  AddSubscriberBody,
+  CreatePipelineBody,
+  PipelineIdParams,
+  RemovePipelineSubscriberParams,
+  UpdatePipelineBody,
+  WebhookPathParams,
+} from "../validators/pipeline.validators.js";
 
 export class PipelineController {
   constructor(
@@ -19,7 +27,8 @@ export class PipelineController {
 
   createPipeline = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.createPipelineUseCase.execute(req.body);
+      const body: CreatePipelineBody = req.body;
+      const result = await this.createPipelineUseCase.execute(body);
       return res.status(201).json(ok(result, "Pipeline created"));
     } catch (error) {
       return next(error);
@@ -32,9 +41,11 @@ export class PipelineController {
     next: NextFunction,
   ) => {
     try {
+      const body: UpdatePipelineBody = req.body;
+      const params: PipelineIdParams = req.params;
       const result = await this.updatePipelineUseCase.execute(
-        req.body,
-        req.params.pipelineId,
+        body,
+        params.pipelineId,
       );
       return res.status(200).json(ok(result, "Pipeline updated"));
     } catch (error) {
@@ -48,8 +59,9 @@ export class PipelineController {
     next: NextFunction,
   ) => {
     try {
+      const params: PipelineIdParams = req.params;
       const result = await this.getPipelineByIdUseCase.execute(
-        req.params.pipelineId,
+        params.pipelineId,
       );
       return res.status(200).json(ok(result, "Pipeline retrieved"));
     } catch (error) {
@@ -63,8 +75,9 @@ export class PipelineController {
     next: NextFunction,
   ) => {
     try {
+      const params: WebhookPathParams = req.params;
       const result = await this.getPipelineByWebhookPathUseCase.execute(
-        req.params.webhookPath,
+        params.webhookPath,
       );
       return res.status(200).json(ok(result, "Pipeline retrieved"));
     } catch (error) {
@@ -78,9 +91,11 @@ export class PipelineController {
     next: NextFunction,
   ) => {
     try {
+      const params: PipelineIdParams = req.params;
+      const body: AddSubscriberBody = req.body;
       const result = await this.addSubscriberUseCase.execute(
-        req.params.pipelineId,
-        req.body.targetUrl,
+        params.pipelineId,
+        body.targetUrl,
       );
       return res.status(201).json(ok(result, "Subscriber added"));
     } catch (error) {
@@ -94,9 +109,10 @@ export class PipelineController {
     next: NextFunction,
   ) => {
     try {
+      const params: RemovePipelineSubscriberParams = req.params;
       await this.removeSubscriberUseCase.execute(
-        req.params.pipelineId,
-        req.params.subscriberId,
+        params.pipelineId,
+        params.subscriberId,
       );
       return res.status(200).json(ok({ removed: true }, "Subscriber removed"));
     } catch (error) {

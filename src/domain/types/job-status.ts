@@ -1,6 +1,1 @@
-export type JobStatus =
-  | "pending"
-  | "processing"
-  | "completed"
-  | "failed"
-  | "retrying";
+export type JobStatus = "pending" | "processing" | "completed" | "failed";

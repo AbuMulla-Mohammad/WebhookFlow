@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { AppContainer } from "../../../presentation/composition-root/container.js";
 import { validateBody } from "../middlewares/validateMiddleware.js";
-import { createPipelineSchema } from "../validators/create-pipeline.validator.js";
-import { updatePipelineSchema } from "../validators/update-pipeline.validator.js";
 import { validateParams } from "../middlewares/validateParamsMiddleware.js";
 import {
+  addSubscriberSchema,
+  createPipelineSchema,
   pipelineIdParamsSchema,
-  pipelineSubscriberParamsSchema,
+  removePipelineSubscriberParamsSchema,
+  updatePipelineSchema,
   webhookPathParamsSchema,
-} from "../validators/pipeline-params.validator.js";
-import { addSubscriberSchema } from "../validators/add-subscriber.validator.js";
+} from "../validators/pipeline.validators.js";
 
 export function buildPipelineRoutes(container: AppContainer): Router {
   const router = Router();
@@ -48,7 +48,7 @@ export function buildPipelineRoutes(container: AppContainer): Router {
 
   router.delete(
     "/:pipelineId/subscribers/:subscriberId",
-    validateParams(pipelineSubscriberParamsSchema),
+    validateParams(removePipelineSubscriberParamsSchema),
     container.controllers.Pipeline.removeSubscriber,
   );
   return router;

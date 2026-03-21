@@ -18,6 +18,14 @@ export class JobRepositoryImpl implements JobRepository {
       payload: row.payload as Record<string, unknown>,
     };
   }
+  async getAllJobs(limit: number = 20, offset: number = 0): Promise<Job[]> {
+    const result = await this.database.query.jobs.findMany({
+      orderBy: [desc(jobs.createdAt)],
+      limit,
+      offset,
+    });
+    return result.map((r) => this.toDomain(r));
+  }
 
   async getById(id: string): Promise<Job | null> {
     const result = await this.database.query.jobs.findFirst({
@@ -44,8 +52,14 @@ export class JobRepositoryImpl implements JobRepository {
     });
   }
 
-  async getByStatus(jobStatus: JobStatus): Promise<Job[]> {
+  async getByStatus(
+    jobStatus: JobStatus,
+    limit?: number,
+    offset?: number,
+  ): Promise<Job[]> {
     const result = await this.database.query.jobs.findMany({
+      limit,
+      offset,
       where: and(eq(jobs.status, jobStatus), eq(jobs.isDeleted, false)),
       orderBy: [desc(jobs.createdAt)],
     });

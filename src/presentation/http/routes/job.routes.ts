@@ -1,0 +1,33 @@
+import { Router } from "express";
+import { validateParams } from "../middlewares/validateParamsMiddleware.js";
+import {
+  jobIdParamsSchema,
+  jobStatusParamsSchema,
+  paginationSchema,
+} from "../validators/job.validators.js";
+import { AppContainer } from "../../../presentation/composition-root/container.js";
+import { validateQuery } from "../middlewares/validateQueryMiddleware.js";
+
+export function buildJobRoutes(container: AppContainer): Router {
+  const router = Router();
+
+  router.get(
+    "/",
+    validateQuery(paginationSchema),
+    container.controllers.Job.getAllJobs,
+  );
+
+  router.get(
+    "/:jobId",
+    validateParams(jobIdParamsSchema),
+    container.controllers.Job.getJobById,
+  );
+
+  router.get(
+    "/status/:jobStatus",
+    validateParams(jobStatusParamsSchema),
+    container.controllers.Job.getJobsByStatus,
+  );
+
+  return router;
+}

@@ -22,7 +22,6 @@ export const jobStatusEnum = pgEnum("job_status", [
   "processing",
   "completed",
   "failed",
-  "retrying",
 ]);
 
 export const deliveryStatusEnum = pgEnum("delivery_status", [

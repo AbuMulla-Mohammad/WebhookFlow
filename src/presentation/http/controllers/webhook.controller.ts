@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { TriggerWebhookUseCase } from "../../../application/pipeline/use-cases/trigger-webhook.use-case.js";
 import { ok } from "../contracts/api-result.js";
+import { WebhookPathParams } from "../validators/pipeline.validators.js";
 
 export class WebhookController {
   constructor(private readonly triggerWebhookUseCase: TriggerWebhookUseCase) {}
@@ -10,8 +11,9 @@ export class WebhookController {
     next: NextFunction,
   ) => {
     try {
+      const params: WebhookPathParams = req.params;
       const result = await this.triggerWebhookUseCase.execute(
-        req.params.webhookPath,
+        params.webhookPath,
         req.body,
       );
 

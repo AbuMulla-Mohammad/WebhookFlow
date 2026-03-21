@@ -12,6 +12,10 @@ import { JobRepositoryImpl } from "../../infrastructure/repositories/job.reposit
 import { TriggerWebhookUseCase } from "../../application/pipeline/use-cases/trigger-webhook.use-case.js";
 import { WebhookController } from "../http/controllers/webhook.controller.js";
 import { RabbitMQJobQueuePublisher } from "../../infrastructure/messaging/rabbitmq-job-queue.publisher.js";
+import { JobController } from "../http/controllers/job.controller.js";
+import { GetJobByIdUseCase } from "../../application/job/use-cases/get-job-by-id.use-case.js";
+import { GetAllJobsUseCase } from "../../application/job/use-cases/get-all-jobs.use-case.js";
+import { GetJobByStatusUseCase } from "../../application/job/use-cases/get-jobs-by-status.use-case.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
@@ -49,6 +53,9 @@ export function createContainer() {
       repositories.job,
       messaging.jobQueuePublisher,
     ),
+    getJobById: new GetJobByIdUseCase(repositories.job),
+    GetAllJobs: new GetAllJobsUseCase(repositories.job),
+    getJobsByStatus: new GetJobByStatusUseCase(repositories.job),
   };
 
   const controllers = {
@@ -61,6 +68,11 @@ export function createContainer() {
       useCases.removeSubscriber,
     ),
     Webhook: new WebhookController(useCases.triggerWebhook),
+    Job: new JobController(
+      useCases.getJobById,
+      useCases.GetAllJobs,
+      useCases.getJobsByStatus,
+    ),
   };
 
   return {
