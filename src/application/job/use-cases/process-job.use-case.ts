@@ -1,6 +1,7 @@
 import { JobRepository } from "../../../domain/repositories/job-repository.js";
 import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
 import { ActionType } from "../../../domain/types/action-type.js";
+import { SamuraizerPort } from "../ports/samuraizer.port.js";
 
 export type ProcessJobOutcome =
   | { status: "processed"; jobId: string }
@@ -12,6 +13,7 @@ export class ProcessJobUseCase {
   constructor(
     private readonly jobRepository: JobRepository,
     private readonly pipelineRepository: PipelineRepository,
+    private readonly samuraizer: SamuraizerPort,
   ) {}
 
   async execute(jobId: string): Promise<ProcessJobOutcome> {
@@ -39,7 +41,7 @@ export class ProcessJobUseCase {
         return { status: "failed", jobId: job.id, reason };
       }
 
-      const result = this.runAction(pipeline.actionType, job.payload);
+      const result = await this.runAction(pipeline.actionType, job.payload);
       await this.jobRepository.markCompleted(job.id, result);
 
       return { status: "processed", jobId: job.id };
@@ -52,24 +54,50 @@ export class ProcessJobUseCase {
     }
   }
 
-  private runAction(
+  private async runAction(
     actionType: ActionType,
     payload: Record<string, unknown>,
-  ): Record<string, unknown> {
+  ): Promise<Record<string, unknown>> {
     if (actionType === "transform-json") {
+      const prefix = "x_";
+      const transformed = Object.fromEntries(
+        Object.entries(payload).map(([k, v]) => [prefix + k, v]),
+      );
       return {
-        transformed: payload,
+        action: "transform-json",
+        transformed,
         transformedAt: new Date().toISOString(),
       };
     }
 
     if (actionType === "summarize-youtube-video") {
+      const videoUrl = payload.videoUrl;
+      if (typeof videoUrl !== "string" || !videoUrl.trim()) {
+        throw new Error(
+          "Missing or invalid payload.videoUrl for summarize action",
+        );
+      }
+      const summaryAndTranscript =
+        await this.samuraizer.summarizeAndFormatTranscriptVideo(videoUrl);
       return {
-        summary: "Summary action is not implemented yet.",
-        originalPayload: payload,
+        action: "summarize-youtube-video",
+        videoUrl,
+        summary: summaryAndTranscript.summarySections,
+        transcript: summaryAndTranscript.formattedTranscript ?? null,
+        summarizedAt: new Date().toISOString(),
       };
     }
 
+    if (actionType === "extract-payload-keys") {
+      const topLevelKeys = Object.keys(payload).sort();
+
+      return {
+        action: "extract-payload-keys",
+        topLevelKeys,
+        topLevelCount: topLevelKeys.length,
+        extractedAt: new Date().toISOString(),
+      };
+    }
     const unsupported: never = actionType;
     throw new Error(`Unsupported action type: ${unsupported}`);
   }

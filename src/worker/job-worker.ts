@@ -8,16 +8,19 @@ import { DeliveryAttemptRepositoryImpl } from "../infrastructure/repositories/de
 import { ProcessJobUseCase } from "../application/job/use-cases/process-job.use-case.js";
 import { DeliverJobUseCase } from "../application/job/use-cases/deliver-job.use-case.js";
 import { handleMessage } from "./consumer/message.handler.js";
+import { SamuraizerHttpClient } from "../infrastructure/http/samuraizer.http-client.js";
 
 async function startWorker(): Promise<void> {
   const jobRepository = new JobRepositoryImpl(db);
   const pipelineRepository = new PipelineRepositoryImpl(db);
   const subscriberRepository = new SubscriberRepositoryImpl(db);
   const deliveryAttemptRepository = new DeliveryAttemptRepositoryImpl(db);
+  const samuraizerClient = new SamuraizerHttpClient();
 
   const processJobUseCase = new ProcessJobUseCase(
     jobRepository,
     pipelineRepository,
+    samuraizerClient,
   );
   const deliverJobUseCase = new DeliverJobUseCase(
     deliveryAttemptRepository,

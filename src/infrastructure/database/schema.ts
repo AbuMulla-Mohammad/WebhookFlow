@@ -14,6 +14,7 @@ import {
 export const actionTypeEnum = pgEnum("action_type", [
   "summarize-youtube-video",
   "transform-json",
+  "extract-payload-keys",
 ]);
 
 export const jobStatusEnum = pgEnum("job_status", [

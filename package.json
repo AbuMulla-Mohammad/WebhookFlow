@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/main.ts",
-    "worker": "tsx src/worker/jobWorker.ts",
+    "worker": "tsx src/worker/job-worker.ts",
     "build": "tsc",
     "start": "node dist/main.js",
     "format:write": "prettier --write \"src/**/*.{js,ts,json,css,md}\"",
