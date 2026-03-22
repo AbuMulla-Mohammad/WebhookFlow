@@ -29,5 +29,11 @@ export function buildJobRoutes(container: AppContainer): Router {
     container.controllers.Job.getJobsByStatus,
   );
 
+  router.get(
+    "/:jobId/delivery-attempts",
+    validateParams(jobIdParamsSchema),
+    container.controllers.Job.getDeliveryAttemptsByJob,
+  );
+
   return router;
 }

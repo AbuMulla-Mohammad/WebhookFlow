@@ -16,6 +16,10 @@ import { JobController } from "../http/controllers/job.controller.js";
 import { GetJobByIdUseCase } from "../../application/job/use-cases/get-job-by-id.use-case.js";
 import { GetAllJobsUseCase } from "../../application/job/use-cases/get-all-jobs.use-case.js";
 import { GetJobByStatusUseCase } from "../../application/job/use-cases/get-jobs-by-status.use-case.js";
+import { DeliveryAttemptRepositoryImpl } from "../../infrastructure/repositories/delivery-attempt.repository.js";
+import { GetDeliveryAttemptsByJobUseCase } from "../../application/job/use-cases/get-delivery-attempts-by-job.use-case.js";
+import { GetDeliveryAttemptByIdUseCase } from "../../application/job/use-cases/get-delivery-attempt-by-id.use-case.js";
+import { DeliveryAttemptController } from "../http/controllers/delivery-attempt.controller.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
@@ -24,6 +28,7 @@ export function createContainer() {
     pipeline: new PipelineRepositoryImpl(db),
     subscriber: new SubscriberRepositoryImpl(db),
     job: new JobRepositoryImpl(db),
+    deliveryAttempt: new DeliveryAttemptRepositoryImpl(db),
   };
 
   const messaging = {
@@ -56,6 +61,13 @@ export function createContainer() {
     getJobById: new GetJobByIdUseCase(repositories.job),
     GetAllJobs: new GetAllJobsUseCase(repositories.job),
     getJobsByStatus: new GetJobByStatusUseCase(repositories.job),
+    getDeliveryAttemptsByJob: new GetDeliveryAttemptsByJobUseCase(
+      repositories.job,
+      repositories.deliveryAttempt,
+    ),
+    getDeliveryAttemptById: new GetDeliveryAttemptByIdUseCase(
+      repositories.deliveryAttempt,
+    ),
   };
 
   const controllers = {
@@ -72,6 +84,11 @@ export function createContainer() {
       useCases.getJobById,
       useCases.GetAllJobs,
       useCases.getJobsByStatus,
+      useCases.getDeliveryAttemptsByJob,
+    ),
+    DeliveryAttempt: new DeliveryAttemptController(
+      useCases.getDeliveryAttemptsByJob,
+      useCases.getDeliveryAttemptById,
     ),
   };
 
