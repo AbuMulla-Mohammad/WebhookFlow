@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AppContainer } from "../../../presentation/composition-root/container.js";
 import { validateParams } from "../middlewares/validateParamsMiddleware.js";
-import { jobIdParamsSchema } from "../validators/job.validators";
+import { jobIdParamsSchema } from "../validators/job.validators.js";
 import { attemptIdParamsSchema } from "../validators/delivery-attempt.validators.js";
 
 export function buildDeliveryAttemptRoutes(container: AppContainer): Router {

@@ -1,4 +1,4 @@
-import { DeliveryStatus } from "src/domain/types/delivery-status";
+import { DeliveryStatus } from "../../../domain/types/delivery-status.js";
 
 export interface DeliveryAttemptOutputDto {
   id: string;

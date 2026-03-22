@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { GetDeliveryAttemptsByJobUseCase } from "../../../application/job/use-cases/get-delivery-attempts-by-job.use-case";
-import { GetDeliveryAttemptByIdUseCase } from "../../../application/job/use-cases/get-delivery-attempt-by-id.use-case";
-import { ok } from "../contracts/api-result";
-import { JobIdParams } from "../validators/job.validators";
-import { AttemptIdParams } from "../validators/delivery-attempt.validators";
+import { GetDeliveryAttemptsByJobUseCase } from "../../../application/job/use-cases/get-delivery-attempts-by-job.use-case.js";
+import { GetDeliveryAttemptByIdUseCase } from "../../../application/job/use-cases/get-delivery-attempt-by-id.use-case.js";
+import { ok } from "../contracts/api-result.js";
+import { JobIdParams } from "../validators/job.validators.js";
+import { AttemptIdParams } from "../validators/delivery-attempt.validators.js";
 
 export class DeliveryAttemptController {
   constructor(

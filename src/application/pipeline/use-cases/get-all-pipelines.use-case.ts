@@ -1,5 +1,5 @@
-import { PipelineRepository } from "../../../domain/repositories/pipeline-repository";
-import { PipelineOutputDto } from "../dtos/pipeline-output.dto";
+import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
+import { PipelineOutputDto } from "../dtos/pipeline-output.dto.js";
 
 export class GetAllPipelinesUseCase {
   constructor(private readonly pipelineRepository: PipelineRepository) {}

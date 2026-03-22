@@ -15,7 +15,7 @@ import {
   WebhookPathParams,
 } from "../validators/pipeline.validators.js";
 import { GetAllPipelinesUseCase } from "../../../application/pipeline/use-cases/get-all-pipelines.use-case.js";
-import { PaginationQuery } from "src/shared/validators/pagination.validators.js";
+import { PaginationQuery } from "../../../shared/validators/pagination.validators.js";
 
 export class PipelineController {
   constructor(
