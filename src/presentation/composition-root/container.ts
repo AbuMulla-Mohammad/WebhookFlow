@@ -20,6 +20,7 @@ import { DeliveryAttemptRepositoryImpl } from "../../infrastructure/repositories
 import { GetDeliveryAttemptsByJobUseCase } from "../../application/job/use-cases/get-delivery-attempts-by-job.use-case.js";
 import { GetDeliveryAttemptByIdUseCase } from "../../application/job/use-cases/get-delivery-attempt-by-id.use-case.js";
 import { DeliveryAttemptController } from "../http/controllers/delivery-attempt.controller.js";
+import { GetAllPipelinesUseCase } from "src/application/pipeline/use-cases/get-all-pipelines.use-case.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
@@ -36,6 +37,7 @@ export function createContainer() {
   };
 
   const useCases = {
+    getAllPipelines: new GetAllPipelinesUseCase(repositories.pipeline),
     createPipeline: new CreatePipelineUseCase(
       repositories.pipeline,
       repositories.subscriber,
@@ -78,6 +80,7 @@ export function createContainer() {
       useCases.getPipelineByWebhookPath,
       useCases.addSubscriber,
       useCases.removeSubscriber,
+      useCases.getAllPipelines,
     ),
     Webhook: new WebhookController(useCases.triggerWebhook),
     Job: new JobController(

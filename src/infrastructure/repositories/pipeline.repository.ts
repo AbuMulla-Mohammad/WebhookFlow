@@ -4,7 +4,7 @@ import {
   PipelineWithSubscribers,
 } from "../../domain/repositories/pipeline-repository.js";
 import { db } from "../database/connection.js";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import {
   PipelineRow,
   pipelines,
@@ -112,9 +112,12 @@ export class PipelineRepositoryImpl implements PipelineRepository {
     return this.mapPipelineWithSubscribers(rows);
   }
 
-  async getAll(): Promise<Pipeline[]> {
+  async getAll(limit: number = 10, offset: number = 0): Promise<Pipeline[]> {
     const result = await this.database.query.pipelines.findMany({
       where: eq(pipelines.isDeleted, false),
+      orderBy: [desc(pipelines.createdAt)],
+      limit,
+      offset,
     });
 
     return result.map((r) => this.toDomain(r));

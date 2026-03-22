@@ -10,9 +10,17 @@ import {
   updatePipelineSchema,
   webhookPathParamsSchema,
 } from "../validators/pipeline.validators.js";
+import { validateQuery } from "../middlewares/validateQueryMiddleware.js";
+import { paginationSchema } from "src/shared/validators/pagination.validators.js";
 
 export function buildPipelineRoutes(container: AppContainer): Router {
   const router = Router();
+
+  router.get(
+    "/",
+    validateQuery(paginationSchema),
+    container.controllers.Pipeline.getAllPipelines,
+  );
 
   router.post(
     "/",

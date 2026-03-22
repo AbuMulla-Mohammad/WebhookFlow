@@ -3,10 +3,10 @@ import { validateParams } from "../middlewares/validateParamsMiddleware.js";
 import {
   jobIdParamsSchema,
   jobStatusParamsSchema,
-  paginationSchema,
 } from "../validators/job.validators.js";
 import { AppContainer } from "../../../presentation/composition-root/container.js";
 import { validateQuery } from "../middlewares/validateQueryMiddleware.js";
+import { paginationSchema } from "../../../shared/validators/pagination.validators.js";
 
 export function buildJobRoutes(container: AppContainer): Router {
   const router = Router();

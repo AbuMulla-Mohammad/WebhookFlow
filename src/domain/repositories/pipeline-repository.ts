@@ -12,7 +12,7 @@ export interface PipelineRepository {
   getByWebhookPathWithSubscribers(
     path: string,
   ): Promise<PipelineWithSubscribers | null>;
-  getAll(): Promise<Pipeline[]>;
+  getAll(limit?: number, offset?: number): Promise<Pipeline[]>;
   save(pipeline: Pipeline): Promise<Pipeline>;
   update(pipeline: Pipeline): Promise<Pipeline>;
 }

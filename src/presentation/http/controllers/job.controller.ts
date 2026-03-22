@@ -4,12 +4,9 @@ import { GetJobByIdUseCase } from "../../../application/job/use-cases/get-job-by
 import { ok } from "../contracts/api-result.js";
 import { GetJobByStatusUseCase } from "../../../application/job/use-cases/get-jobs-by-status.use-case.js";
 import { JobStatus } from "../../../domain/types/job-status.js";
-import {
-  JobIdParams,
-  JobStatusParams,
-  PaginationQuery,
-} from "../validators/job.validators.js";
+import { JobIdParams, JobStatusParams } from "../validators/job.validators.js";
 import { GetDeliveryAttemptsByJobUseCase } from "../../../application/job/use-cases/get-delivery-attempts-by-job.use-case.js";
+import { PaginationQuery } from "../../../shared/validators/pagination.validators.js";
 
 export class JobController {
   constructor(

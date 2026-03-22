@@ -14,6 +14,8 @@ import {
   UpdatePipelineBody,
   WebhookPathParams,
 } from "../validators/pipeline.validators.js";
+import { GetAllPipelinesUseCase } from "../../../application/pipeline/use-cases/get-all-pipelines.use-case.js";
+import { PaginationQuery } from "src/shared/validators/pagination.validators.js";
 
 export class PipelineController {
   constructor(
@@ -23,6 +25,7 @@ export class PipelineController {
     private readonly getPipelineByWebhookPathUseCase: GetPipelineByWebhookPathUseCase,
     private readonly addSubscriberUseCase: AddSubscriberUseCase,
     private readonly removeSubscriberUseCase: RemoveSubscriberUseCase,
+    private readonly getAllPipelinesUseCase: GetAllPipelinesUseCase,
   ) {}
 
   createPipeline = async (req: Request, res: Response, next: NextFunction) => {
@@ -117,6 +120,18 @@ export class PipelineController {
       return res.status(200).json(ok({ removed: true }, "Subscriber removed"));
     } catch (error) {
       return next(error);
+    }
+  };
+  getAllPipelines = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { limit, offset } = req.query as unknown as PaginationQuery;
+      const result = await this.getAllPipelinesUseCase.execute(
+        Number(limit),
+        Number(offset),
+      );
+      res.status(200).json(ok(result, "Pipelines retrieved"));
+    } catch (error) {
+      next(error);
     }
   };
 }
