@@ -6,7 +6,6 @@ import { attemptIdParamsSchema } from "../validators/delivery-attempt.validators
 
 export function buildDeliveryAttemptRoutes(container: AppContainer): Router {
   const router = Router();
-  const controller = container.controllers.DeliveryAttempt;
   router.get(
     "/jobs/:jobId/delivery-attempts",
     validateParams(jobIdParamsSchema),
