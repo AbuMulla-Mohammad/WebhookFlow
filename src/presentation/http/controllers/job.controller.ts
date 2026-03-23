@@ -23,7 +23,10 @@ export class JobController {
   ) => {
     try {
       const params: JobIdParams = req.params;
-      const result = await this.getJobByIdUseCase.execute(params.jobId);
+      const result = await this.getJobByIdUseCase.execute(
+        params.jobId,
+        req.user!,
+      );
       res.status(200).json(ok(result, "Job retrieved"));
     } catch (error) {
       return next(error);
@@ -34,6 +37,7 @@ export class JobController {
     try {
       const { limit, offset } = req.query as unknown as PaginationQuery;
       const result = await this.getAllJobsUseCase.execute(
+        req.user!,
         Number(limit),
         Number(offset),
       );
@@ -53,6 +57,7 @@ export class JobController {
       const { limit, offset } = req.query as unknown as PaginationQuery;
       const result = await this.getJobsByStatusUseCase.execute(
         jobStatus,
+        req.user!,
         Number(limit),
         Number(offset),
       );
@@ -71,6 +76,7 @@ export class JobController {
       const params: JobIdParams = req.params;
       const result = await this.getDeliveryAttemptsByJobUseCase.execute(
         params.jobId,
+        req.user!,
       );
       res.status(200).json(ok(result, "Delivery attempts retrieved"));
     } catch (error) {

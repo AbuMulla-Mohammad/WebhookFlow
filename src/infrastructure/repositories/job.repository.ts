@@ -16,6 +16,7 @@ export class JobRepositoryImpl implements JobRepository {
       errorMessage: row.errorMessage ?? undefined,
       status: row.status as JobStatus,
       payload: row.payload as Record<string, unknown>,
+      triggeredBy: row.triggeredBy ?? undefined,
     };
   }
   async getAllJobs(limit: number = 20, offset: number = 0): Promise<Job[]> {
@@ -49,6 +50,7 @@ export class JobRepositoryImpl implements JobRepository {
       payload: job.payload,
       errorMessage: job.errorMessage,
       status: job.status,
+      triggeredBy: job.triggeredBy ?? null,
     });
   }
 
@@ -114,5 +116,37 @@ export class JobRepositoryImpl implements JobRepository {
         processedAt: new Date(),
       })
       .where(and(eq(jobs.id, id), eq(jobs.isDeleted, false)));
+  }
+  async getAllByTriggeredBy(
+    userId: string,
+    limit: number = 20,
+    offset: number = 0,
+  ): Promise<Job[]> {
+    const result = await this.database.query.jobs.findMany({
+      where: and(eq(jobs.triggeredBy, userId), eq(jobs.isDeleted, false)),
+      orderBy: [desc(jobs.createdAt)],
+      limit,
+      offset,
+    });
+    return result.map((r) => this.toDomain(r));
+  }
+
+  async getByStatusAndTriggeredBy(
+    jobStatus: JobStatus,
+    userId: string,
+    limit?: number,
+    offset?: number,
+  ): Promise<Job[]> {
+    const result = await this.database.query.jobs.findMany({
+      where: and(
+        eq(jobs.status, jobStatus),
+        eq(jobs.triggeredBy, userId),
+        eq(jobs.isDeleted, false),
+      ),
+      orderBy: [desc(jobs.createdAt)],
+      limit,
+      offset,
+    });
+    return result.map((r) => this.toDomain(r));
   }
 }

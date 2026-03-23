@@ -15,6 +15,7 @@ export class TriggerWebhookUseCase {
   async execute(
     webhookPath: string,
     payload: Record<string, unknown>,
+    triggeredBy?: string,
   ): Promise<TriggerWebhookOutputDto> {
     const pipeline =
       await this.pipelineRepository.getByWebhookPath(webhookPath);
@@ -35,6 +36,7 @@ export class TriggerWebhookUseCase {
       errorMessage: undefined,
       processedAt: undefined,
       result: undefined,
+      triggeredBy,
     };
 
     await this.jobRepository.save(job);

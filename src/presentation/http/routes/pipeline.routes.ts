@@ -12,6 +12,7 @@ import {
 } from "../validators/pipeline.validators.js";
 import { validateQuery } from "../middlewares/validate-query.middleware.js";
 import { paginationSchema } from "../../../shared/validators/pagination.validators.js";
+import { authorize } from "../middlewares/authorize.middleware.js";
 
 export function buildPipelineRoutes(container: AppContainer): Router {
   const router = Router();
@@ -24,12 +25,14 @@ export function buildPipelineRoutes(container: AppContainer): Router {
 
   router.post(
     "/",
+    authorize("admin"),
     validateBody(createPipelineSchema),
     container.controllers.Pipeline.createPipeline,
   );
 
   router.put(
     "/:pipelineId",
+    authorize("admin"),
     validateParams(pipelineIdParamsSchema),
     validateBody(updatePipelineSchema),
     container.controllers.Pipeline.updatePipeline,
@@ -49,6 +52,7 @@ export function buildPipelineRoutes(container: AppContainer): Router {
 
   router.post(
     "/:pipelineId/subscribers",
+    authorize("admin"),
     validateParams(pipelineIdParamsSchema),
     validateBody(addSubscriberSchema),
     container.controllers.Pipeline.addSubscriber,
@@ -56,6 +60,7 @@ export function buildPipelineRoutes(container: AppContainer): Router {
 
   router.delete(
     "/:pipelineId/subscribers/:subscriberId",
+    authorize("admin"),
     validateParams(removePipelineSubscriberParamsSchema),
     container.controllers.Pipeline.removeSubscriber,
   );

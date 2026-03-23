@@ -9,4 +9,5 @@ export interface Job extends BaseEntity {
   payload: Record<string, unknown>;
   errorMessage?: string;
   status: JobStatus;
+  triggeredBy?: string;
 }

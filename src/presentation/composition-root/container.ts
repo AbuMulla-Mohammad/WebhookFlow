@@ -21,15 +21,25 @@ import { GetDeliveryAttemptsByJobUseCase } from "../../application/job/use-cases
 import { GetDeliveryAttemptByIdUseCase } from "../../application/job/use-cases/get-delivery-attempt-by-id.use-case.js";
 import { DeliveryAttemptController } from "../http/controllers/delivery-attempt.controller.js";
 import { GetAllPipelinesUseCase } from "../../application/pipeline/use-cases/get-all-pipelines.use-case.js";
+import { BcryptHashAdapter } from "../../infrastructure/auth/bcrypt-hash.adapter.js";
+import { JwtTokenAdapter } from "../../infrastructure/auth/jwt-token.adapter.js";
+import { UserRepositoryImpl } from "../../infrastructure/repositories/user.repository.js";
+import { RegisterUseCase } from "../../application/auth/use-cases/register.use-case.js";
+import { LoginUseCase } from "../../application/auth/use-cases/loging.use-case.js";
+import { AuthController } from "../http/controllers/auth.controller.js";
 
 export type AppContainer = ReturnType<typeof createContainer>;
 
 export function createContainer() {
+  const hashAdapter = new BcryptHashAdapter();
+  const tokenAdapter = new JwtTokenAdapter();
+
   const repositories = {
     pipeline: new PipelineRepositoryImpl(db),
     subscriber: new SubscriberRepositoryImpl(db),
     job: new JobRepositoryImpl(db),
     deliveryAttempt: new DeliveryAttemptRepositoryImpl(db),
+    user: new UserRepositoryImpl(db),
   };
 
   const messaging = {
@@ -70,6 +80,9 @@ export function createContainer() {
     getDeliveryAttemptById: new GetDeliveryAttemptByIdUseCase(
       repositories.deliveryAttempt,
     ),
+
+    register: new RegisterUseCase(repositories.user, hashAdapter, tokenAdapter),
+    login: new LoginUseCase(repositories.user, hashAdapter, tokenAdapter),
   };
 
   const controllers = {
@@ -93,6 +106,7 @@ export function createContainer() {
       useCases.getDeliveryAttemptsByJob,
       useCases.getDeliveryAttemptById,
     ),
+    Auth: new AuthController(useCases.register, useCases.login),
   };
 
   return {

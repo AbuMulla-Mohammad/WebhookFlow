@@ -7,12 +7,14 @@ import {
 import { AppContainer } from "../../../presentation/composition-root/container.js";
 import { validateQuery } from "../middlewares/validate-query.middleware.js";
 import { paginationSchema } from "../../../shared/validators/pagination.validators.js";
+import { authorize } from "../middlewares/authorize.middleware.js";
 
 export function buildJobRoutes(container: AppContainer): Router {
   const router = Router();
 
   router.get(
     "/",
+    authorize("admin"),
     validateQuery(paginationSchema),
     container.controllers.Job.getAllJobs,
   );

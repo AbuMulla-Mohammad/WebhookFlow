@@ -25,6 +25,8 @@ const makeJobRepo = (): JobRepository => ({
   markProcessing: vi.fn(),
   markCompleted: vi.fn(),
   markFailed: vi.fn(),
+  getAllByTriggeredBy: vi.fn(),
+  getByStatusAndTriggeredBy: vi.fn(),
 });
 
 const makeJobQueuePublisher = (): JobQueuePublisher => ({

@@ -29,6 +29,8 @@ export const deliveryStatusEnum = pgEnum("delivery_status", [
   "failed",
 ]);
 
+export const userRoleEnum = pgEnum("user_role", ["admin", "user"]);
+
 export const pipelines = pgTable(
   "pipelines",
   {
@@ -71,6 +73,9 @@ export const jobs = pgTable(
     payload: jsonb("payload").notNull(),
     errorMessage: text("error_message"),
     status: jobStatusEnum("status").notNull(),
+    triggeredBy: uuid("triggered_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
   },
   (table) => [
     index("jobs_status_idx").on(table.status),
@@ -109,7 +114,18 @@ export const deliveryAttempts = pgTable(
   ],
 );
 
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  role: userRoleEnum("role").notNull().default("user"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+});
+
 export type PipelineRow = typeof pipelines.$inferSelect;
 export type SubscriberRow = typeof subscribers.$inferSelect;
 export type JobRow = typeof jobs.$inferSelect;
 export type DeliveryAttemptRow = typeof deliveryAttempts.$inferSelect;
+export type UserRow = typeof users.$inferSelect;

@@ -15,6 +15,7 @@ export class WebhookController {
       const result = await this.triggerWebhookUseCase.execute(
         params.webhookPath,
         req.body,
+        req.user?.id,
       );
 
       return res.status(202).json(ok(result, "Webhook accepted"));

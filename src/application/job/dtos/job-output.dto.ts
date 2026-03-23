@@ -12,4 +12,5 @@ export interface JobOutputDto {
   payload: Record<string, unknown>;
   errorMessage?: string;
   status: JobStatus;
+  triggeredBy?: string;
 }

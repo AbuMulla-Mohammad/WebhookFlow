@@ -3,6 +3,8 @@ import { BadRequestError } from "../../../shared/errors/BadRequestError.js";
 import { ZodError } from "zod";
 import { fail } from "../contracts/api-result.js";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.js";
+import { UnauthorizedError } from "../../../shared/errors/UnauthorizedError.js";
+import { ForbiddenError } from "../../../shared/errors/ForbiddenError.js";
 
 export function errorHandler(
   err: unknown,
@@ -27,6 +29,13 @@ export function errorHandler(
     return res.status(404).json(fail(err.message));
   }
 
+  if (err instanceof UnauthorizedError) {
+    return res.status(401).json(fail(err.message));
+  }
+
+  if (err instanceof ForbiddenError) {
+    return res.status(403).json(fail(err.message));
+  }
   console.error(err);
   return res.status(500).json(fail("Internal server error"));
 }

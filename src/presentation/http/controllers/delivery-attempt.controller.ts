@@ -20,6 +20,7 @@ export class DeliveryAttemptController {
       const params: JobIdParams = req.params;
       const result = await this.getDeliveryAttemptsByJobUseCase.execute(
         params.jobId,
+        req.user!,
       );
       res.status(200).json(ok(result, "Delivery attempts retrieved"));
     } catch (error) {

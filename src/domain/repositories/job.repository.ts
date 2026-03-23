@@ -14,4 +14,15 @@ export interface JobRepository {
   markProcessing(id: string): Promise<void>;
   markCompleted(id: string, result: Record<string, unknown>): Promise<void>;
   markFailed(id: string, errorMessage: string): Promise<void>;
+  getAllByTriggeredBy(
+    userId: string,
+    limit?: number,
+    offset?: number,
+  ): Promise<Job[]>;
+  getByStatusAndTriggeredBy(
+    jobStatus: JobStatus,
+    userId: string,
+    limit?: number,
+    offset?: number,
+  ): Promise<Job[]>;
 }
