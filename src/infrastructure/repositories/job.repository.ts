@@ -1,6 +1,6 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 import { Job } from "../../domain/entities/job.js";
-import { JobRepository } from "../../domain/repositories/job-repository.js";
+import { JobRepository } from "../../domain/repositories/job.repository.js";
 import { JobStatus } from "../../domain/types/job-status.js";
 import { db } from "../database/connection.js";
 import { JobRow, jobs } from "../database/schema.js";

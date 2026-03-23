@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { Subscriber } from "../../domain/entities/subscriber.js";
-import { SubscriberRepository } from "../../domain/repositories/subscriber-repository.js";
+import { SubscriberRepository } from "../../domain/repositories/subscriber.repository.js";
 import { db } from "../database/connection.js";
 import { subscribers } from "../database/schema.js";
 

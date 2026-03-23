@@ -2,7 +2,7 @@ import { Pipeline } from "../../domain/entities/pipeline.js";
 import {
   PipelineRepository,
   PipelineWithSubscribers,
-} from "../../domain/repositories/pipeline-repository.js";
+} from "../../domain/repositories/pipeline.repository.js";
 import { db } from "../database/connection.js";
 import { and, desc, eq } from "drizzle-orm";
 import {

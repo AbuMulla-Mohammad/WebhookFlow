@@ -1,4 +1,4 @@
-import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
+import { PipelineRepository } from "../../../domain/repositories/pipeline.repository.js";
 import { PipelineOutputDto } from "../dtos/pipeline-output.dto.js";
 import { UpdatePipelineInputDto } from "../dtos/update-pipeline-input.dto.js";
 import { ACTION_TYPES } from "../../../domain/types/action-type.js";

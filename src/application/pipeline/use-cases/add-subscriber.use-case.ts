@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
-import { SubscriberRepository } from "../../../domain/repositories/subscriber-repository.js";
+import { PipelineRepository } from "../../../domain/repositories/pipeline.repository.js";
+import { SubscriberRepository } from "../../../domain/repositories/subscriber.repository.js";
 import { BadRequestError } from "../../../shared/errors/BadRequestError.js";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.js";
 import { SubscriberListOutputDto } from "../dtos/subscriber-list-output.dto.js";

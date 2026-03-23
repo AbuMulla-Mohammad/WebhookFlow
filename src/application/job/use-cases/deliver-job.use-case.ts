@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { DeliveryAttempt } from "../../../domain/entities/delivery-attempt.js";
-import { DeliveryAttemptRepository } from "../../../domain/repositories/delivery-attempt-repository.js";
-import { JobRepository } from "../../../domain/repositories/job-repository.js";
-import { SubscriberRepository } from "../../../domain/repositories/subscriber-repository.js";
+import { DeliveryAttemptRepository } from "../../../domain/repositories/delivery-attempt.repository.js";
+import { JobRepository } from "../../../domain/repositories/job.repository.js";
+import { SubscriberRepository } from "../../../domain/repositories/subscriber.repository.js";
 import { DeliverJobOutputDto } from "../dtos/deliver-job-output.dto.js";
 
 export class DeliverJobUseCase {

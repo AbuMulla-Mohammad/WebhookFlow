@@ -1,6 +1,6 @@
 import { NotFoundError } from "../../../shared/errors/NotFoundError.js";
-import { JobRepository } from "../../../domain/repositories/job-repository.js";
-import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
+import { JobRepository } from "../../../domain/repositories/job.repository.js";
+import { PipelineRepository } from "../../../domain/repositories/pipeline.repository.js";
 import { TriggerWebhookOutputDto } from "../dtos/trigger-webhook-output.dto.js";
 import { Job } from "../../../domain/entities/job.js";
 import { randomUUID } from "node:crypto";

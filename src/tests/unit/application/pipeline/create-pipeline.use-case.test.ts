@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CreatePipelineUseCase } from "../../../../application/pipeline/use-cases/create-pipeline.use-case.js";
-import { PipelineRepository } from "../../../../domain/repositories/pipeline-repository.js";
-import { SubscriberRepository } from "../../../../domain/repositories/subscriber-repository.js";
+import { PipelineRepository } from "../../../../domain/repositories/pipeline.repository.js";
+import { SubscriberRepository } from "../../../../domain/repositories/subscriber.repository.js";
 import { BadRequestError } from "../../../../shared/errors/BadRequestError.js";
 import { Pipeline } from "../../../../domain/entities/pipeline.js";
 

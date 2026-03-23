@@ -1,5 +1,5 @@
 import { Channel, ConsumeMessage } from "amqplib";
-import { JobRepository } from "../../domain/repositories/job-repository.js";
+import { JobRepository } from "../../domain/repositories/job.repository.js";
 import { ProcessJobUseCase } from "../../application/job/use-cases/process-job.use-case.js";
 import { DeliverJobUseCase } from "../../application/job/use-cases/deliver-job.use-case.js";
 import { rabbitmqConfig } from "../../shared/config/rabbitmq.config.js";

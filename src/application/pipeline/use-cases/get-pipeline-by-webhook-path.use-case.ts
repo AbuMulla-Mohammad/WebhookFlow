@@ -1,4 +1,4 @@
-import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
+import { PipelineRepository } from "../../../domain/repositories/pipeline.repository.js";
 import { PipelineOutputDto } from "../dtos/pipeline-output.dto.js";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.js";
 

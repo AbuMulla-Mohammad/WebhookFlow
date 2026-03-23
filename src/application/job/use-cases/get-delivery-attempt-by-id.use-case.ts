@@ -1,5 +1,5 @@
 import { NotFoundError } from "../../../shared/errors/NotFoundError.js";
-import { DeliveryAttemptRepository } from "../../../domain/repositories/delivery-attempt-repository.js";
+import { DeliveryAttemptRepository } from "../../../domain/repositories/delivery-attempt.repository.js";
 import { DeliveryAttemptOutputDto } from "../dtos/delivery-attempt-output.dto.js";
 
 export class GetDeliveryAttemptByIdUseCase {

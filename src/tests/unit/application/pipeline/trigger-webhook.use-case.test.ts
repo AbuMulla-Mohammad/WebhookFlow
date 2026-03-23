@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { TriggerWebhookUseCase } from "../../../../application/pipeline/use-cases/trigger-webhook.use-case.js";
-import { PipelineRepository } from "../../../../domain/repositories/pipeline-repository.js";
-import { JobRepository } from "../../../../domain/repositories/job-repository.js";
+import { PipelineRepository } from "../../../../domain/repositories/pipeline.repository.js";
+import { JobRepository } from "../../../../domain/repositories/job.repository.js";
 import { JobQueuePublisher } from "../../../../infrastructure/messaging/rabbitmq-job-queue.publisher.js";
 import { NotFoundError } from "../../../../shared/errors/NotFoundError.js";
 import { Pipeline } from "../../../../domain/entities/pipeline.js";

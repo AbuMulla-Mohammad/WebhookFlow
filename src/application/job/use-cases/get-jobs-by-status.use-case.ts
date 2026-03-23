@@ -1,4 +1,4 @@
-import { JobRepository } from "../../../domain/repositories/job-repository.js";
+import { JobRepository } from "../../../domain/repositories/job.repository.js";
 import { JobStatus } from "../../../domain/types/job-status.js";
 import { JobOutputDto } from "../dtos/job-output.dto.js";
 

@@ -1,5 +1,5 @@
-import { JobRepository } from "../../../domain/repositories/job-repository.js";
-import { PipelineRepository } from "../../../domain/repositories/pipeline-repository.js";
+import { JobRepository } from "../../../domain/repositories/job.repository.js";
+import { PipelineRepository } from "../../../domain/repositories/pipeline.repository.js";
 import { ActionType } from "../../../domain/types/action-type.js";
 import { SamuraizerPort } from "../ports/samuraizer.port.js";
 

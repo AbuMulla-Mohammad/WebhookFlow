@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { DeliveryAttempt } from "../../domain/entities/delivery-attempt.js";
-import { DeliveryAttemptRepository } from "../../domain/repositories/delivery-attempt-repository.js";
+import { DeliveryAttemptRepository } from "../../domain/repositories/delivery-attempt.repository.js";
 import { DeliveryStatus } from "../../domain/types/delivery-status.js";
 import { db } from "../database/connection.js";
 import { deliveryAttempts } from "../database/schema.js";
