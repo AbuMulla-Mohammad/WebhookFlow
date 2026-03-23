@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AppContainer } from "../../../presentation/composition-root/container.js";
-import { validateBody } from "../middlewares/validateMiddleware.js";
-import { validateParams } from "../middlewares/validateParamsMiddleware.js";
+import { validateBody } from "../middlewares/validate.middleware.js";
+import { validateParams } from "../middlewares/validate-params.middleware.js";
 import {
   addSubscriberSchema,
   createPipelineSchema,
@@ -10,7 +10,7 @@ import {
   updatePipelineSchema,
   webhookPathParamsSchema,
 } from "../validators/pipeline.validators.js";
-import { validateQuery } from "../middlewares/validateQueryMiddleware.js";
+import { validateQuery } from "../middlewares/validate-query.middleware.js";
 import { paginationSchema } from "../../../shared/validators/pagination.validators.js";
 
 export function buildPipelineRoutes(container: AppContainer): Router {

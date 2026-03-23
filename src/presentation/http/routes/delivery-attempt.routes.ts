@@ -1,18 +1,12 @@
 import { Router } from "express";
 import { AppContainer } from "../../../presentation/composition-root/container.js";
-import { validateParams } from "../middlewares/validateParamsMiddleware.js";
-import { jobIdParamsSchema } from "../validators/job.validators.js";
+import { validateParams } from "../middlewares/validate-params.middleware.js";
 import { attemptIdParamsSchema } from "../validators/delivery-attempt.validators.js";
 
 export function buildDeliveryAttemptRoutes(container: AppContainer): Router {
   const router = Router();
   router.get(
-    "/jobs/:jobId/delivery-attempts",
-    validateParams(jobIdParamsSchema),
-    container.controllers.DeliveryAttempt.getByJob,
-  );
-  router.get(
-    "/delivery-attempts/:attemptId",
+    "/:attemptId",
     validateParams(attemptIdParamsSchema),
     container.controllers.DeliveryAttempt.getById,
   );
