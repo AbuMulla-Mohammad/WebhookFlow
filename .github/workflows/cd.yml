@@ -41,7 +41,7 @@ jobs:
         run: docker compose up -d
 
       - name: Wait for services
-        run: sleep 30
+        run: sleep 90
 
       - name: List running containers
         run: docker ps
