@@ -1,0 +1,55 @@
+name: CD Pipeline (Docker Deployment Simulation)
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create .env file
+        run: |
+          echo "DATABASE_URL=postgres://postgres:postgres@postgres:5432/webhookflow?sslmode=disable" >> .env
+          echo "RABBITMQ_URL=amqp://rabbitmq:5672" >> .env
+          echo "RABBITMQ_PROCESS_QUEUE=jobs.process" >> .env
+          echo "RABBITMQ_PREFETCH=5" >> .env
+          echo "RABBITMQ_PROCESS_RETRY_QUEUE=jobs.process.retry" >> .env
+          echo "RABBITMQ_PROCESS_DLQ=jobs.process.dlq" >> .env
+          echo "RABBITMQ_MAX_PROCESS_RETRIES=3" >> .env
+          echo "RABBITMQ_PROCESS_RETRY_DELAY_MS=5000" >> .env
+          echo "SAMURAIZER_BASE_URL=http://samuraizer:8000" >> .env
+          echo "SAMURAIZER_SUMMARY_TRANSCRIPT_PATH=/api/summarize_format_transcript" >> .env
+          echo "SAMURAIZER_TIMEOUT_MS=300000" >> .env
+          echo "JWT_SECRET=a-string-secret-at-least-256-bits-long" >> .env
+          echo "JWT_EXPIRES_IN=7d" >> .env
+          echo "COHERE_API_KEY=${COHERE_API_KEY}" >> .env
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Start services
+        run: docker compose up -d
+
+      - name: Wait for services
+        run: sleep 30
+
+      - name: List running containers
+        run: docker ps
+
+      - name: Health check API
+        run: |
+          curl --fail http://localhost:3000 || exit 1
+
+      - name: Shutdown services
+        if: always()
+        run: docker compose down

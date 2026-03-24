@@ -13,7 +13,7 @@ services:
       - "3000:3000"
     volumes:
       - ./:/app
-    command: ["node", "dist/main.js"]
+    command: ["sh", "-c", "npm run db:generate && npm run db:migrate && node dist/main.js"]
 
   worker:
     build: .
@@ -65,7 +65,7 @@ services:
     image: mabumualla/ai-youtube-summarizer:latest
     container_name: webhookflow-samuraizer
     environment:
-      - COHERE_API_KEY=COHERE API KEY
+      - COHERE_API_KEY=${COHERE_API_KEY}
     ports:
       - "8000:8000"
 
