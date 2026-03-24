@@ -111,6 +111,7 @@ SAMURAIZER_SUMMARY_TRANSCRIPT_PATH=/api/summarize_format_transcript
 SAMURAIZER_TIMEOUT_MS=300000
 JWT_SECRET=a-string-secret-at-least-256-bits-long
 JWT_EXPIRES_IN=7d
+COHERE_API_KEY=COHER_API_KEY
 ```
 
 ---
