@@ -1,7 +1,6 @@
 import { JobRepository } from "../../../domain/repositories/job.repository.js";
 import { PipelineRepository } from "../../../domain/repositories/pipeline.repository.js";
-import { ActionType } from "../../../domain/types/action-type.js";
-import { SamuraizerPort } from "../ports/samuraizer.port.js";
+import { ActionHandlerRegistry } from "../handlers/action-handler.registry.js";
 
 export type ProcessJobOutcome =
   | { status: "processed"; jobId: string }
@@ -13,7 +12,7 @@ export class ProcessJobUseCase {
   constructor(
     private readonly jobRepository: JobRepository,
     private readonly pipelineRepository: PipelineRepository,
-    private readonly samuraizer: SamuraizerPort,
+    private readonly actionHandlerRegistry: ActionHandlerRegistry,
   ) {}
 
   async execute(jobId: string): Promise<ProcessJobOutcome> {
@@ -41,7 +40,9 @@ export class ProcessJobUseCase {
         return { status: "failed", jobId: job.id, reason };
       }
 
-      const result = await this.runAction(pipeline.actionType, job.payload);
+      const result = await this.actionHandlerRegistry
+        .get(pipeline.actionType)
+        .execute(job.payload);
       await this.jobRepository.markCompleted(job.id, result);
 
       return { status: "processed", jobId: job.id };
@@ -52,53 +53,5 @@ export class ProcessJobUseCase {
       await this.jobRepository.markFailed(job.id, reason);
       return { status: "failed", jobId: job.id, reason };
     }
-  }
-
-  private async runAction(
-    actionType: ActionType,
-    payload: Record<string, unknown>,
-  ): Promise<Record<string, unknown>> {
-    if (actionType === "transform-json") {
-      const prefix = "x_";
-      const transformed = Object.fromEntries(
-        Object.entries(payload).map(([k, v]) => [prefix + k, v]),
-      );
-      return {
-        action: "transform-json",
-        transformed,
-        transformedAt: new Date().toISOString(),
-      };
-    }
-
-    if (actionType === "summarize-youtube-video") {
-      const videoUrl = payload.videoUrl;
-      if (typeof videoUrl !== "string" || !videoUrl.trim()) {
-        throw new Error(
-          "Missing or invalid payload.videoUrl for summarize action",
-        );
-      }
-      const summaryAndTranscript =
-        await this.samuraizer.summarizeAndFormatTranscriptVideo(videoUrl);
-      return {
-        action: "summarize-youtube-video",
-        videoUrl,
-        summary: summaryAndTranscript.summarySections,
-        transcript: summaryAndTranscript.formattedTranscript ?? null,
-        summarizedAt: new Date().toISOString(),
-      };
-    }
-
-    if (actionType === "extract-payload-keys") {
-      const topLevelKeys = Object.keys(payload).sort();
-
-      return {
-        action: "extract-payload-keys",
-        topLevelKeys,
-        topLevelCount: topLevelKeys.length,
-        extractedAt: new Date().toISOString(),
-      };
-    }
-    const unsupported: never = actionType;
-    throw new Error(`Unsupported action type: ${unsupported}`);
   }
 }

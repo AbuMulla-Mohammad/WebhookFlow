@@ -9,6 +9,10 @@ import { ProcessJobUseCase } from "../application/job/use-cases/process-job.use-
 import { DeliverJobUseCase } from "../application/job/use-cases/deliver-job.use-case.js";
 import { handleMessage } from "./consumer/message.handler.js";
 import { SamuraizerHttpClient } from "../infrastructure/http/samuraizer.http-client.js";
+import { ActionHandlerRegistry } from "../application/job/handlers/action-handler.registry.js";
+import { TransformJsonHandler } from "../application/job/handlers/transform-json.handler.js";
+import { SummarizeYouTubeHandler } from "../application/job/handlers/summarize-youtube.handler.js";
+import { ExtractKeysHandler } from "../application/job/handlers/extract-keys.handler.js";
 
 async function startWorker(): Promise<void> {
   const jobRepository = new JobRepositoryImpl(db);
@@ -16,11 +20,17 @@ async function startWorker(): Promise<void> {
   const subscriberRepository = new SubscriberRepositoryImpl(db);
   const deliveryAttemptRepository = new DeliveryAttemptRepositoryImpl(db);
   const samuraizerClient = new SamuraizerHttpClient();
+  const actionHandlers = [
+    new TransformJsonHandler(),
+    new SummarizeYouTubeHandler(samuraizerClient),
+    new ExtractKeysHandler(),
+  ];
+  const actionRegistry = new ActionHandlerRegistry(actionHandlers);
 
   const processJobUseCase = new ProcessJobUseCase(
     jobRepository,
     pipelineRepository,
-    samuraizerClient,
+    actionRegistry,
   );
   const deliverJobUseCase = new DeliverJobUseCase(
     deliveryAttemptRepository,
