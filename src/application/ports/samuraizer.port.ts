@@ -1,4 +1,4 @@
-import { SamuraizerSummaryTranscriptResponseDto } from "../dtos/samuraizer-summary-response.dto.js";
+import { SamuraizerSummaryTranscriptResponseDto } from "../job/dtos/samuraizer-summary-response.dto.js";
 
 export interface SamuraizerPort {
   summarizeAndFormatTranscriptVideo(

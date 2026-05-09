@@ -1,5 +1,5 @@
 import { SamuraizerSummaryTranscriptResponseDto } from "../../application/job/dtos/samuraizer-summary-response.dto.js";
-import { SamuraizerPort } from "../../application/job/ports/samuraizer.port.js";
+import { SamuraizerPort } from "../../application/ports/samuraizer.port.js";
 import { samuraizerConfig } from "../../shared/config/samuraizer.config.js";
 import {
   mapSamuraizerResponse,

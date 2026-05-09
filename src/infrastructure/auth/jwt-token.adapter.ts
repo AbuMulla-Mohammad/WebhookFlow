@@ -1,8 +1,5 @@
 import jwt from "jsonwebtoken";
-import {
-  TokenPayload,
-  TokenPort,
-} from "../../application/auth/ports/token.port.js";
+import { TokenPayload, TokenPort } from "../../application/ports/token.port.js";
 import { UnauthorizedError } from "../../shared/errors/UnauthorizedError.js";
 import { jwtConfig } from "../../shared/config/jwt.config.js";
 

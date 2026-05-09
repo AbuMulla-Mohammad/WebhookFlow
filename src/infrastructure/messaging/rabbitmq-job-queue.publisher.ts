@@ -1,11 +1,8 @@
 import amqp, { Channel, ChannelModel } from "amqplib";
 import { rabbitmqConfig } from "../../shared/config/rabbitmq.config.js";
+import { JobQueuePort } from "../../application/ports/job-queue.port.js";
 
-export interface JobQueuePublisher {
-  publishProcessJob(jobId: string): Promise<void>;
-}
-
-export class RabbitMQJobQueuePublisher implements JobQueuePublisher {
+export class RabbitMQJobQueuePublisher implements JobQueuePort {
   private connection: ChannelModel | null = null;
   private channel: Channel | null = null;
 

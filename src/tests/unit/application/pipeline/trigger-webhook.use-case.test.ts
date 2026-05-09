@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { TriggerWebhookUseCase } from "../../../../application/pipeline/use-cases/trigger-webhook.use-case.js";
 import { PipelineRepository } from "../../../../domain/repositories/pipeline.repository.js";
 import { JobRepository } from "../../../../domain/repositories/job.repository.js";
-import { JobQueuePublisher } from "../../../../infrastructure/messaging/rabbitmq-job-queue.publisher.js";
 import { NotFoundError } from "../../../../shared/errors/NotFoundError.js";
+import { JobQueuePort } from "../../../../application/ports/job-queue.port.js";
 import { Pipeline } from "../../../../domain/entities/pipeline.js";
 
 const makePipelineRepo = (): PipelineRepository => ({
@@ -29,7 +29,7 @@ const makeJobRepo = (): JobRepository => ({
   getByStatusAndTriggeredBy: vi.fn(),
 });
 
-const makeJobQueuePublisher = (): JobQueuePublisher => ({
+const makeJobQueuePublisher = (): JobQueuePort => ({
   publishProcessJob: vi.fn(),
 });
 
@@ -47,7 +47,7 @@ const makePipeline = (): Pipeline => ({
 describe("TriggerWebhookUseCase", () => {
   let pipelineRepo: PipelineRepository;
   let jobRepo: JobRepository;
-  let jobQueuePublisher: JobQueuePublisher;
+  let jobQueuePublisher: JobQueuePort;
   let useCase: TriggerWebhookUseCase;
 
   beforeEach(() => {

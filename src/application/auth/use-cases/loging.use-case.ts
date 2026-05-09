@@ -1,6 +1,6 @@
 import { UserRepository } from "../../../domain/repositories/user.repository.js";
-import { HashPort } from "../ports/hash.port.js";
-import { TokenPort } from "../ports/token.port.js";
+import { HashPort } from "../../ports/hash.port.js";
+import { TokenPort } from "../../ports/token.port.js";
 import { BadRequestError } from "../../../shared/errors/BadRequestError.js";
 import { LoginInputDto } from "../dtos/login-input.dto.js";
 import { LoginOutputDto } from "../dtos/login-output.dto.js";

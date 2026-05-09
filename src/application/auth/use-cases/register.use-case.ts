@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { BadRequestError } from "../../../shared/errors/BadRequestError.js";
-import { HashPort } from "../ports/hash.port.js";
-import { TokenPort } from "../ports/token.port.js";
+import { HashPort } from "../../ports/hash.port.js";
+import { TokenPort } from "../../ports/token.port.js";
 import { UserRepository } from "../../../domain/repositories/user.repository.js";
 import { RegisterOutputDto } from "../dtos/register-output.dto.js";
 import { RegisterInputDto } from "../dtos/register-input.dto.js";

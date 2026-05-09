@@ -4,13 +4,13 @@ import { PipelineRepository } from "../../../domain/repositories/pipeline.reposi
 import { TriggerWebhookOutputDto } from "../dtos/trigger-webhook-output.dto.js";
 import { Job } from "../../../domain/entities/job.js";
 import { randomUUID } from "node:crypto";
-import { JobQueuePublisher } from "../../../infrastructure/messaging/rabbitmq-job-queue.publisher.js";
+import { JobQueuePort } from "../../ports/job-queue.port.js";
 
 export class TriggerWebhookUseCase {
   constructor(
     private readonly pipelineRepository: PipelineRepository,
     private readonly jobRepository: JobRepository,
-    private readonly jobQueuePublisher: JobQueuePublisher,
+    private readonly jobQueuePublisher: JobQueuePort,
   ) {}
   async execute(
     webhookPath: string,

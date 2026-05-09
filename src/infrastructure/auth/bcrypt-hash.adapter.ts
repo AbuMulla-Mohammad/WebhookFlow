@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { HashPort } from "../../application/auth/ports/hash.port.js";
+import { HashPort } from "../../application/ports/hash.port.js";
 
 export class BcryptHashAdapter implements HashPort {
   private readonly saltRounds = 10;
