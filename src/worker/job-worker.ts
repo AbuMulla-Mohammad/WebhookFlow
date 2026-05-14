@@ -14,6 +14,8 @@ import { TransformJsonHandler } from "../application/job/handlers/transform-json
 import { SummarizeYouTubeHandler } from "../application/job/handlers/summarize-youtube.handler.js";
 import { ExtractKeysHandler } from "../application/job/handlers/extract-keys.handler.js";
 
+import { JobOrchestratorUseCase } from "../application/job/use-cases/job-orchestrator.use-case.js";
+
 async function startWorker(): Promise<void> {
   const jobRepository = new JobRepositoryImpl(db);
   const pipelineRepository = new PipelineRepositoryImpl(db);
@@ -38,6 +40,13 @@ async function startWorker(): Promise<void> {
     subscriberRepository,
   );
 
+  const orchestrator = new JobOrchestratorUseCase(
+    processJobUseCase,
+    deliverJobUseCase,
+    jobRepository,
+    rabbitmqConfig.maxProcessRetries,
+  );
+
   const connection = await amqp.connect(rabbitmqConfig.url);
   const channel = await connection.createChannel();
 
@@ -57,13 +66,7 @@ async function startWorker(): Promise<void> {
   console.log(`Job worker listening on queue: ${rabbitmqConfig.processQueue}`);
 
   await channel.consume(rabbitmqConfig.processQueue, (message) => {
-    void handleMessage(
-      message,
-      channel,
-      jobRepository,
-      processJobUseCase,
-      deliverJobUseCase,
-    );
+    void handleMessage(message, channel, orchestrator);
   });
 
   registerShutdown(connection);

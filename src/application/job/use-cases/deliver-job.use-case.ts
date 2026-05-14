@@ -6,19 +6,11 @@ import { SubscriberRepository } from "../../../domain/repositories/subscriber.re
 import { DeliverJobOutputDto } from "../dtos/deliver-job-output.dto.js";
 
 export class DeliverJobUseCase {
-  private readonly maxDeliveryAttempts: number;
-  private readonly deliveryRetryBaseDelayMs: number;
-
   constructor(
     private readonly deliveryAttemptRepository: DeliveryAttemptRepository,
     private readonly jobRepository: JobRepository,
     private readonly subscriberRepository: SubscriberRepository,
-  ) {
-    this.maxDeliveryAttempts = Number(process.env.DELIVERY_MAX_ATTEMPTS ?? 3);
-    this.deliveryRetryBaseDelayMs = Number(
-      process.env.DELIVERY_RETRY_BASE_DELAY_MS ?? 1000,
-    );
-  }
+  ) {}
 
   async execute(jobId: string): Promise<DeliverJobOutputDto> {
     const job = await this.jobRepository.getById(jobId);
@@ -44,124 +36,105 @@ export class DeliverJobUseCase {
     const attempts: DeliverJobOutputDto["attempts"] = [];
 
     for (const subscriber of subscribers) {
-      const previousAttemptsForSubscriber = existingAttempts.filter(
+      const previousAttempts = existingAttempts.filter(
         (a) => a.subscriberId === subscriber.id,
-      ).length;
+      );
+      
+      const hasSucceeded = previousAttempts.some((a) => a.status === "success");
 
-      let finalStatus: "success" | "failed" = "failed";
-      let finalResponseCode: number | undefined = undefined;
+      if (hasSucceeded) {
+        attempts.push({
+          subscriberId: subscriber.id,
+          status: "success",
+          responseCode: previousAttempts.find((a) => a.status === "success")?.responseCode,
+        });
+        continue;
+      }
 
-      for (let offset = 1; offset <= this.maxDeliveryAttempts; offset += 1) {
-        const attemptNumber = previousAttemptsForSubscriber + offset;
-        const now = new Date();
+      const attemptNumber = previousAttempts.length + 1;
+      const now = new Date();
 
-        console.info("Delivery attempt started", {
+      console.info("Delivery attempt started", {
+        jobId: job.id,
+        subscriberId: subscriber.id,
+        attemptNumber,
+      });
+
+      try {
+        const response = await this.postToSubscriber(
+          subscriber.targetUrl,
+          job.result,
+        );
+
+        const status = response.ok ? "success" : "failed";
+
+        const attempt: DeliveryAttempt = {
+          id: randomUUID(),
+          createdAt: now,
+          updatedAt: now,
+          isDeleted: false,
           jobId: job.id,
           subscriberId: subscriber.id,
+          status,
+          responseCode: response.status,
           attemptNumber,
-          maxAttempts: this.maxDeliveryAttempts,
-        });
+          errorMessage: response.ok ? undefined : response.statusText,
+        };
 
-        try {
-          const response = await this.postToSubscriber(
-            subscriber.targetUrl,
-            job.result,
-          );
+        await this.deliveryAttemptRepository.save(attempt);
 
-          finalStatus = response.ok ? "success" : "failed";
-          finalResponseCode = response.status;
-
-          const attempt: DeliveryAttempt = {
-            id: randomUUID(),
-            createdAt: now,
-            updatedAt: now,
-            isDeleted: false,
+        if (response.ok) {
+          console.info("Delivery attempt succeeded", {
             jobId: job.id,
             subscriberId: subscriber.id,
-            status: finalStatus,
-            responseCode: response.status,
             attemptNumber,
-            errorMessage: response.ok ? undefined : response.statusText,
-          };
-
-          await this.deliveryAttemptRepository.save(attempt);
-
-          if (response.ok) {
-            console.info("Delivery attempt succeeded", {
-              jobId: job.id,
-              subscriberId: subscriber.id,
-              attemptNumber,
-              responseCode: response.status,
-            });
-            break;
-          }
-
+            responseCode: response.status,
+          });
+        } else {
           console.warn("Delivery attempt returned non-success response", {
             jobId: job.id,
             subscriberId: subscriber.id,
             attemptNumber,
             responseCode: response.status,
             statusText: response.statusText,
-            willRetry: offset < this.maxDeliveryAttempts,
-          });
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : "Unknown delivery error";
-
-          finalStatus = "failed";
-          finalResponseCode = undefined;
-
-          const attempt: DeliveryAttempt = {
-            id: randomUUID(),
-            createdAt: now,
-            updatedAt: now,
-            isDeleted: false,
-            jobId: job.id,
-            subscriberId: subscriber.id,
-            status: "failed",
-            attemptNumber,
-            errorMessage,
-          };
-
-          await this.deliveryAttemptRepository.save(attempt);
-
-          console.error("Delivery attempt failed with exception", {
-            jobId: job.id,
-            subscriberId: subscriber.id,
-            attemptNumber,
-            errorMessage,
-            willRetry: offset < this.maxDeliveryAttempts,
           });
         }
 
-        if (offset < this.maxDeliveryAttempts) {
-          const delayMs =
-            this.deliveryRetryBaseDelayMs * Math.pow(2, offset - 1);
-          console.info("Delivery retry backoff", {
-            jobId: job.id,
-            subscriberId: subscriber.id,
-            currentAttemptNumber: attemptNumber,
-            nextAttemptNumber: attemptNumber + 1,
-            delayMs,
-          });
+        attempts.push({
+          subscriberId: subscriber.id,
+          status,
+          responseCode: response.status,
+        });
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown delivery error";
 
-          await this.sleep(delayMs);
-        }
-      }
-
-      if (finalStatus === "failed") {
-        console.error("Delivery exhausted max attempts", {
+        const attempt: DeliveryAttempt = {
+          id: randomUUID(),
+          createdAt: now,
+          updatedAt: now,
+          isDeleted: false,
           jobId: job.id,
           subscriberId: subscriber.id,
-          maxAttempts: this.maxDeliveryAttempts,
+          status: "failed",
+          attemptNumber,
+          errorMessage,
+        };
+
+        await this.deliveryAttemptRepository.save(attempt);
+
+        console.error("Delivery attempt failed with exception", {
+          jobId: job.id,
+          subscriberId: subscriber.id,
+          attemptNumber,
+          errorMessage,
+        });
+
+        attempts.push({
+          subscriberId: subscriber.id,
+          status: "failed",
         });
       }
-
-      attempts.push({
-        subscriberId: subscriber.id,
-        status: finalStatus,
-        responseCode: finalResponseCode,
-      });
     }
 
     const successCount = attempts.filter((a) => a.status === "success").length;
@@ -193,9 +166,5 @@ export class DeliverJobUseCase {
       clearTimeout(timeoutId);
     }
   }
-
-  private async sleep(ms: number): Promise<void> {
-    if (!Number.isFinite(ms) || ms <= 0) return;
-    await new Promise<void>((resolve) => setTimeout(resolve, ms));
-  }
 }
+
