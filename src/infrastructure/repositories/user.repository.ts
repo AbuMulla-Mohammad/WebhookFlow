@@ -2,8 +2,8 @@ import { and, eq } from "drizzle-orm";
 import { User } from "../../domain/entities/user.js";
 import { db } from "../database/connection.js";
 import { users, UserRow } from "../database/schema.js";
-import { UserRole } from "src/domain/types/user-roles.js";
-import { UserRepository } from "src/domain/repositories/user.repository.js";
+import { UserRole } from "../../domain/types/user-roles.js";
+import { UserRepository } from "../../domain/repositories/user.repository.js";
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly database: typeof db) {}

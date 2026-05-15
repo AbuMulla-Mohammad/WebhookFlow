@@ -1,4 +1,4 @@
-import { ActionHandler } from "../../../application/ports/action-handler.port";
+import { ActionHandler } from "../../../application/ports/action-handler.port.js";
 
 export class ExtractKeysHandler implements ActionHandler {
   readonly type = "extract-payload-keys" as const;

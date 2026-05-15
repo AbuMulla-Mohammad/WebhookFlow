@@ -1,9 +1,10 @@
 import { defineConfig } from "drizzle-kit";
+import process from "node:process";
 
 function getDbUrl(): string {
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) {
-    throw new Error("DATABASE_URLL environment variable is not set");
+    throw new Error("DATABASE_URL environment variable is not set");
   }
   return dbUrl;
 }

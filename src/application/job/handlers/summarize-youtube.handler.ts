@@ -1,5 +1,5 @@
-import { ActionHandler } from "../../../application/ports/action-handler.port";
-import { SamuraizerPort } from "../../../application/ports/samuraizer.port";
+import { ActionHandler } from "../../../application/ports/action-handler.port.js";
+import { SamuraizerPort } from "../../../application/ports/samuraizer.port.js";
 
 export class SummarizeYouTubeHandler implements ActionHandler {
   constructor(private readonly samuraizer: SamuraizerPort) {}

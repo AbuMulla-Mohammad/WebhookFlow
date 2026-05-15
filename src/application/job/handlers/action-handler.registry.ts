@@ -1,5 +1,5 @@
-import { ActionHandler } from "../../../application/ports/action-handler.port";
-import { ActionType } from "../../../domain/types/action-type";
+import { ActionHandler } from "../../../application/ports/action-handler.port.js";
+import { ActionType } from "../../../domain/types/action-type.js";
 
 export class ActionHandlerRegistry {
   private readonly handlers = new Map<ActionType, ActionHandler>();

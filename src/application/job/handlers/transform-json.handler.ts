@@ -1,4 +1,4 @@
-import { ActionHandler } from "../../../application/ports/action-handler.port";
+import { ActionHandler } from "../../../application/ports/action-handler.port.js";
 
 export class TransformJsonHandler implements ActionHandler {
   readonly type = "transform-json" as const;

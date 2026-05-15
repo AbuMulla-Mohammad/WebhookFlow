@@ -1,4 +1,4 @@
-import { ActionType } from "src/domain/types/action-type";
+import { ActionType } from "../../domain/types/action-type.js";
 
 export interface ActionHandler {
   type: ActionType;
