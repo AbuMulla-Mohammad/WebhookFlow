@@ -39,14 +39,15 @@ export class DeliverJobUseCase {
       const previousAttempts = existingAttempts.filter(
         (a) => a.subscriberId === subscriber.id,
       );
-      
+
       const hasSucceeded = previousAttempts.some((a) => a.status === "success");
 
       if (hasSucceeded) {
         attempts.push({
           subscriberId: subscriber.id,
           status: "success",
-          responseCode: previousAttempts.find((a) => a.status === "success")?.responseCode,
+          responseCode: previousAttempts.find((a) => a.status === "success")
+            ?.responseCode,
         });
         continue;
       }
@@ -167,4 +168,3 @@ export class DeliverJobUseCase {
     }
   }
 }
-
